@@ -18,12 +18,12 @@ const (
 
 type token struct {
 	typ tokenType
-	val []byte
+	val string
 }
 
 type tokenStream <-chan token
 
-func lexTokens(input []byte, sep rune) tokenStream {
+func lexTokens(input string, sep rune) tokenStream {
 	l := &lexer{
 		sep:    sep,
 		input:  input,
@@ -37,7 +37,7 @@ func lexTokens(input []byte, sep rune) tokenStream {
 
 type lexer struct {
 	sep        rune
-	input      []byte
+	input      string
 	start, pos int
 	lastw      int
 	tokens     chan token
@@ -62,7 +62,7 @@ func (l *lexer) emit(t tokenType) {
 const cEOF rune = -1
 
 func (l *lexer) readc() (c rune) {
-	c, l.lastw = utf8.DecodeRune(l.input[l.pos:])
+	c, l.lastw = utf8.DecodeRuneInString(l.input[l.pos:])
 	if l.lastw == 0 {
 		return cEOF
 	}

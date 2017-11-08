@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 )
@@ -20,7 +19,7 @@ type columnProc struct {
 	sep     rune
 	field   int
 	command []string
-	output  io.Writer
+	output  *os.File
 }
 
 func main() {
@@ -38,27 +37,27 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		p.processFields(scanner.Bytes())
+		p.processFields(scanner.Text())
 		fmt.Fprintln(p.output)
 	}
 
 	dieIf(scanner.Err())
 }
 
-func (p *columnProc) processFields(b []byte) {
+func (p *columnProc) processFields(line string) {
 	i := 1
-	for token := range lexTokens(b, p.sep) {
+	for token := range lexTokens(line, p.sep) {
 		switch token.typ {
 		case tokenData:
 			if i == p.field {
-				p.processData(string(token.val))
+				p.processData(token.val)
 				continue
 			}
 		case tokenSep:
 			i++
 		case tokenSpace:
 		}
-		p.output.Write(token.val)
+		p.output.WriteString(token.val)
 	}
 }
 

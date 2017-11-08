@@ -6,32 +6,31 @@ import (
 	"testing"
 )
 
-// aliases to allow shorter syntax in literals:
-type bs = []byte
+// shorter syntax in literals:
 type ts = []token
 
-var sep = token{tokenSep, bs(";")}
+var sep = token{tokenSep, ";"}
 
 var lexTab = []struct {
-	line   []byte
+	line   string
 	tokens []token
 }{
-	{bs(""), nil},
-	{bs("   "), ts{{tokenSpace, bs("   ")}}},
-	{bs("foo"), ts{{tokenData, bs("foo")}}},
-	{bs("foo bar"), ts{
-		{tokenData, bs("foo")}, {tokenSpace, bs(" ")},
-		{tokenData, bs("bar")}}},
-	{bs(";"), ts{sep}},
-	{bs("foo;"), ts{{tokenData, bs("foo")}, sep}},
-	{bs("foo;  bar"), ts{
-		{tokenData, bs("foo")}, sep,
-		{tokenSpace, bs("  ")}, {tokenData, bs("bar")},
+	{"", nil},
+	{"   ", ts{{tokenSpace, "   "}}},
+	{"foo", ts{{tokenData, "foo"}}},
+	{"foo bar", ts{
+		{tokenData, "foo"}, {tokenSpace, " "},
+		{tokenData, "bar"}}},
+	{";", ts{sep}},
+	{"foo;", ts{{tokenData, "foo"}, sep}},
+	{"foo;  bar", ts{
+		{tokenData, "foo"}, sep,
+		{tokenSpace, "  "}, {tokenData, "bar"},
 	}},
 }
 
 func (t token) String() string {
-	return fmt.Sprintf("{%d %q}", t.typ, string(t.val))
+	return fmt.Sprintf("{%d %q}", t.typ, t.val)
 }
 
 func (ts tokenStream) gather() (res []token) {

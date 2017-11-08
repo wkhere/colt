@@ -1,4 +1,4 @@
-- switch to string in lexer, as exec.Command also needs string
++ switch to string in lexer, as exec.Command also needs string
 - more meaningful error message from subprocess
 - maybe switch to other flags lib
 - show proper usage with subcommand
