@@ -1,6 +1,7 @@
 + switch to string in lexer, as exec.Command also needs string
 - more meaningful error message from subprocess
 - maybe switch to other flags lib
+  - or simply hand-crafted flag parser for -N/+N etc
 - show proper usage with subcommand
 - allow negative field numbers and make -1 (last column) a default
   - perfect for passdb case
