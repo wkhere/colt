@@ -5,4 +5,3 @@
 - allow negative field numbers and make -1 (last column) a default
   - perfect for passdb case
   - requires column caching 
-- license & readme
