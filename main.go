@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 )
@@ -19,7 +20,7 @@ type columnProc struct {
 	sep     rune
 	field   int
 	command []string
-	output  *os.File
+	output  io.Writer
 }
 
 func main() {
@@ -57,7 +58,7 @@ func (p *columnProc) processFields(line string) {
 			i++
 		case tokenSpace:
 		}
-		p.output.WriteString(token.val)
+		fmt.Fprint(p.output, token.val)
 	}
 }
 
