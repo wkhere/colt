@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -24,17 +23,9 @@ type columnProc struct {
 }
 
 func main() {
-	p := columnProc{separator: ';', output: os.Stdout}
+	p := columnProc{output: os.Stdout}
 
-	{
-		selFlag := flag.Int("s", -1,
-			"select column to transform, range 1..N or -N..-1")
-
-		flag.Parse()
-
-		p.selection = *selFlag
-		p.command = flag.Args()
-	}
+	p.parseArgs(os.Args[1:])
 
 	scanner := bufio.NewScanner(os.Stdin)
 
