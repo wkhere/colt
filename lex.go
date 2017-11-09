@@ -33,6 +33,13 @@ func lexTokens(input string, sep rune) tokenStream {
 	return l.tokens
 }
 
+func (ts tokenStream) gather() (res []token) {
+	for tok := range ts {
+		res = append(res, tok)
+	}
+	return
+}
+
 // engine
 
 type lexer struct {

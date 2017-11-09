@@ -33,13 +33,6 @@ func (t token) String() string {
 	return fmt.Sprintf("{%d %q}", t.typ, t.val)
 }
 
-func (ts tokenStream) gather() (res []token) {
-	for tok := range ts {
-		res = append(res, tok)
-	}
-	return
-}
-
 var eq = reflect.DeepEqual
 
 func TestLex(t *testing.T) {
