@@ -6,6 +6,7 @@
 - allow negative field numbers and make -1 (last column) a default
   - perfect for passdb case
   - requires column caching 
+- strip LF from subprocess output
 - long-running subprocess, comm. via pipes
 
 # vi:sw=2:expandtab
