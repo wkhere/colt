@@ -3,9 +3,9 @@
 - maybe switch to other flags lib
   - or simply hand-crafted flag parser for -N/+N etc
 - show proper usage with subcommand
-- allow negative field numbers and make -1 (last column) a default
-  - perfect for passdb case
-  - requires column caching 
++ allow negative column numbers and make -1 (last column) a default
+  + perfect for passdb case
+  + requires column caching
 - strip LF from subprocess output
 - long-running subprocess, comm. via pipes
 

@@ -37,7 +37,7 @@ var eq = reflect.DeepEqual
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		if res := lexTokens(tc.line, ';').gather(); !eq(res, tc.tokens) {
+		if res := lexTokens(tc.line, ';').flatten(); !eq(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\ngot %v\nexp %v",
 				i, res, tc.tokens)
 		}

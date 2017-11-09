@@ -17,48 +17,67 @@ func dieIf(err error) {
 }
 
 type columnProc struct {
-	sep     rune
-	field   int
-	command []string
-	output  io.Writer
+	separator rune
+	selection int
+	command   []string
+	output    io.Writer
 }
 
 func main() {
-	p := columnProc{';', 1, nil, os.Stdout}
+	p := columnProc{separator: ';', output: os.Stdout}
 
 	{
-		fieldFlag := flag.Int("f", 1, "field to extract")
+		selFlag := flag.Int("s", -1,
+			"select column to transform, range 1..N or -N..-1")
 
 		flag.Parse()
 
-		p.field = *fieldFlag
+		p.selection = *selFlag
 		p.command = flag.Args()
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		p.processFields(scanner.Text())
+		p.process(scanner.Text())
 		fmt.Fprintln(p.output)
 	}
 
 	dieIf(scanner.Err())
 }
 
-func (p *columnProc) processFields(line string) {
-	i := 1
-	for token := range lexTokens(line, p.sep) {
-		switch token.typ {
-		case tokenData:
-			if i == p.field {
+func setupIdx(col, ncols int) (int, error) {
+	switch {
+	case col < 0 && col >= -ncols:
+		return ncols + col, nil
+	case col > 0 && col <= ncols:
+		return col - 1, nil
+	default:
+		return -1, fmt.Errorf(
+			"invalid column selector #%d for %d columns",
+			col, ncols)
+	}
+}
+
+func (p *columnProc) process(line string) {
+
+	cols := lexTokens(line, p.separator).group()
+
+	selectedIdx, err := setupIdx(p.selection, len(cols))
+	if err != nil {
+		warn(err)
+		fmt.Fprint(p.output, line)
+		return
+	}
+
+	for i, col := range cols {
+		for _, token := range col {
+			if token.typ == tokenData && i == selectedIdx {
 				p.processData(token.val)
 				continue
 			}
-		case tokenSep:
-			i++
-		case tokenSpace:
+			fmt.Fprint(p.output, token.val)
 		}
-		fmt.Fprint(p.output, token.val)
 	}
 }
 
@@ -68,4 +87,8 @@ func (p *columnProc) processData(s string) {
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	dieIf(err)
+}
+
+func warn(err error) {
+	fmt.Fprintf(os.Stderr, "WARN %v\n", err)
 }

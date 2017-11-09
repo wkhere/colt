@@ -33,9 +33,22 @@ func lexTokens(input string, sep rune) tokenStream {
 	return l.tokens
 }
 
-func (ts tokenStream) gather() (res []token) {
+func (ts tokenStream) flatten() (res []token) {
 	for tok := range ts {
 		res = append(res, tok)
+	}
+	return
+}
+
+func (ts tokenStream) group() (res [][]token) {
+	res = make([][]token, 1, 3)
+	groupIdx := 0
+	for tok := range ts {
+		res[groupIdx] = append(res[groupIdx], tok)
+		if tok.typ == tokenSep {
+			res = append(res, nil)
+			groupIdx++
+		}
 	}
 	return
 }
