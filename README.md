@@ -1,6 +1,6 @@
 ## colt
 
-`colt` is COLumn TRansformer.
+`colt` is COLumn Transformer.
 
 `colt +N subcommand` transforms the Nth column of input with subcommand,
 leaving other columns as they are.
