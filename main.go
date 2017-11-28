@@ -10,7 +10,7 @@ import (
 
 func dieIf(err error) {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "cols:", err)
+		fmt.Fprintln(os.Stderr, "colt:", err)
 		os.Exit(1)
 	}
 }
