@@ -1,5 +1,7 @@
 ## colt
 
+![](https://www.colt.com/portals/0/productimages/2015/P4750_left.png "BANG!")
+
 `colt` is COLumn Transformer.
 
 `colt +N subcommand` transforms the Nth column of input with subcommand,
