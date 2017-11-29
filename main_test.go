@@ -6,28 +6,28 @@ import (
 )
 
 func TestProcess(t *testing.T) {
-	var cmd = []string{"echo", "-n", "AA"}
+	var cmd = []string{"perl", "-e", "print uc $ARGV[0]"}
 
 	var tab = []struct {
 		sel    int
 		input  string
 		output string
 	}{
-		{1, "aa", "AA aa"},
-		{1, "aa;bb", "AA aa;bb"},
-		{1, "aa; bb", "AA aa; bb"},
-		{1, "aa ;bb", "AA aa ;bb"},
-		{1, "aa ; bb", "AA aa ; bb"},
-		{1, " aa; bb", " AA aa; bb"},
-		{2, "aa;bb", "aa;AA bb"},
-		{2, "aa;bb ", "aa;AA bb "},
-		{2, "aa; bb", "aa; AA bb"},
-		{2, "aa ;bb", "aa ;AA bb"},
-		{2, "aa ; bb", "aa ; AA bb"},
+		{1, "aa", "AA"},
+		{1, "aa;bb", "AA;bb"},
+		{1, "aa; bb", "AA; bb"},
+		{1, "aa ;bb", "AA ;bb"},
+		{1, "aa ; bb", "AA ; bb"},
+		{1, " aa; bb", " AA; bb"},
+		{2, "aa;bb", "aa;BB"},
+		{2, "aa;bb ", "aa;BB "},
+		{2, "aa; bb", "aa; BB"},
+		{2, "aa ;bb", "aa ;BB"},
+		{2, "aa ; bb", "aa ; BB"},
 		{3, "aa;bb", "aa;bb"},
-		{-1, "aa", "AA aa"},
-		{-1, "aa;bb", "aa;AA bb"},
-		{-2, "aa;bb", "AA aa;bb"},
+		{-1, "aa", "AA"},
+		{-1, "aa;bb", "aa;BB"},
+		{-2, "aa;bb", "AA;bb"},
 		{-3, "aa;bb", "aa;bb"},
 		{0, "aa;bb", "aa;bb"},
 	}
