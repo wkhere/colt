@@ -4,12 +4,11 @@
 
 `colt` is COLumn Transformer.
 
-`colt +N subcommand` transforms the Nth column of input with subcommand,
+`colt +N command` transforms the Nth column of input with given command,
 leaving other columns as they are.
 
-`colt -N subcommand` does the same for the Nth column counting from the end.
+`colt -N command` does the same for the Nth column counting from the end.
 
-`colt subcommand` transforms the last column (`-1` is the default).
+`colt command` transforms the last column (`-1` is the default).
 
-`colt -d':' subcommand` specifies the column delimiter (the default is `;`).
-
+`colt -d':' command` specifies the column delimiter (the default is `;`, it must be 1 character).
