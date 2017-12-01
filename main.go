@@ -80,9 +80,23 @@ func (p *columnProc) processData(s string) {
 	cmd.Stderr = p.stderr
 	err := cmd.Run()
 	dieIf(err)
-	p.stdout.Write(bytes.TrimRight(b.Bytes(), "\r\n"))
+	p.stdout.Write(chomp(b.Bytes()))
 }
 
 func (p *columnProc) warn(err error) {
 	fmt.Fprintf(p.stderr, "WARN %v\n", err)
+}
+
+func chomp(b []byte) []byte {
+	for {
+		if len(b) == 0 {
+			return b
+		}
+		switch l := len(b) - 1; b[l] {
+		case '\n', '\r':
+			b = b[:l]
+		default:
+			return b
+		}
+	}
 }
