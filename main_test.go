@@ -6,7 +6,7 @@ import (
 )
 
 func TestProcess(t *testing.T) {
-	var cmd = []string{"perl", "-e", "print uc $ARGV[0]"}
+	var cmd = []string{"perl", "-e", `print uc $ARGV[0], "\r\n"`}
 
 	var tab = []struct {
 		sel    int

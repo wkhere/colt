@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -73,11 +74,13 @@ func (p *columnProc) process(line string) {
 }
 
 func (p *columnProc) processData(s string) {
+	var b bytes.Buffer
 	cmd := exec.Command(p.command[0], append(p.command[1:], s)...)
-	cmd.Stdout = p.output
+	cmd.Stdout = &b
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	dieIf(err)
+	p.output.Write(bytes.TrimRight(b.Bytes(), "\r\n"))
 }
 
 func warn(err error) {

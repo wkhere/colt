@@ -5,7 +5,7 @@
 + allow negative column numbers and make -1 (last column) a default
   + perfect for passdb case
   + requires column caching
-- strip LF from subprocess output
++ strip CRLF from subprocess output
 - long-running subprocess, comm. via pipes
 - multi-character delimiter
 
