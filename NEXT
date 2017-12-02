@@ -6,7 +6,6 @@
   + perfect for passdb case
   + requires column caching
 + strip CRLF from subprocess output
-- long-running subprocess, comm. via pipes
 - multi-character delimiter
 
 # vi:sw=2:expandtab
