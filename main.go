@@ -76,6 +76,7 @@ func (p *columnProc) process(line string) {
 func (p *columnProc) processData(s string) {
 	var b bytes.Buffer
 	cmd := exec.Command(p.command[0], append(p.command[1:], s)...)
+	cmd.Env = append(os.Environ(), "COLOR=1")
 	cmd.Stdout = &b
 	cmd.Stderr = p.stderr
 	err := cmd.Run()
