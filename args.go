@@ -45,7 +45,7 @@ func usage() {
 
 usage: colt [+N|-N] [-dC] command ...
 where:
-    N - integer denoting column number, starting from 1;
+    N - column number, starting from 1;
         when negative, counted from end; default -1 (last column)
     C - 1-character column delimiter
     command - a command, possible with args, for transforming the column
