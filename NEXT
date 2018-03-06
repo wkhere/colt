@@ -6,7 +6,7 @@
   + perfect for passdb case
   + requires column caching
 + strip CRLF from subprocess output
-- multi-character delimiter
+- multi-character separator
 
 - bug#1:
   selected column should go to subcmd as a whole, even with spaces, minus

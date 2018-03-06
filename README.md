@@ -11,7 +11,8 @@ leaving other columns as they are.
 
 `colt command` transforms the last column (`-1` is the default).
 
-`colt -d':' command` specifies the column delimiter (the default is `;`, it must be 1 character).
+`colt -s':' command` specifies the column separator
+(the default is `;`, it must be 1 character).
 
 `command` should accept input data as an argument and print the output.
 

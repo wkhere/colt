@@ -7,7 +7,10 @@ import (
 	"strconv"
 )
 
-var selectionR = regexp.MustCompile(`^[-+]?\d+$`)
+var (
+	separatorFlag = 's'
+	selectionR    = regexp.MustCompile(`^[-+]?\d+$`)
+)
 
 func (p *columnProc) parseArgs(args []string) {
 	p.selection = -1
@@ -21,7 +24,7 @@ loop:
 			case selectionR.MatchString(arg):
 				p.selection, _ = strconv.Atoi(arg)
 
-			case arg[:2] == "-d":
+			case arg[0] == '-' && rune(arg[1]) == separatorFlag:
 				if len(arg[2:]) != 1 {
 					usage()
 				}
@@ -41,14 +44,16 @@ loop:
 }
 
 func usage() {
-	fmt.Fprint(os.Stderr, `colt - copy input transforming chosen column with a given command.
+	fmt.Fprintf(os.Stderr, `colt - copy input transforming chosen column with a given command.
 
-usage: colt [+N|-N] [-dC] command ...
+usage: colt [+N|-N] [-%cS] command ...
 where:
     N - column number, starting from 1;
         when negative, counted from end; default -1 (last column)
-    C - 1-character column delimiter
+    S - 1-character column separator; default ';'
     command - a command, possible with args, for transforming the column
-`)
+`,
+		separatorFlag,
+	)
 	os.Exit(2)
 }
