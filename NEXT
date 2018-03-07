@@ -8,6 +8,8 @@
 + strip CRLF from subprocess output
 - multi-character separator
 
+- allow quoted text in columns
+
 - bug#1:
   selected column should go to subcmd as a whole, even with spaces, minus
   leading spaces
