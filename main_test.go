@@ -44,7 +44,7 @@ func TestProcess(t *testing.T) {
 		}
 		p.process(tc.input)
 		if res := b.String(); res != tc.output {
-			t.Errorf("tc[%d] mismatch\ngot %v\nexp %v", i, res, tc.output)
+			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v", i, res, tc.output)
 		}
 	}
 }
