@@ -8,4 +8,9 @@
 + strip CRLF from subprocess output
 - multi-character delimiter
 
+- bug#1:
+  selected column should go to subcmd as a whole, even with spaces, minus
+  leading spaces
+  ..use csv?
+
 # vi:sw=2:expandtab
