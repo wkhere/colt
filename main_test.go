@@ -13,7 +13,13 @@ var tab = []struct {
 	input  string
 	output string
 }{
+	{1, "", ""},
+	{1, " ", " "},
+	{1, "  ", "  "},
 	{1, "aa", "AA"},
+	{1, "aa  ", "AA  "},
+	{1, "  aa", "  AA"},
+	{1, "  aa  ", "  AA  "},
 	{1, "aa;bb", "AA;bb"},
 	{1, "aa; bb", "AA; bb"},
 	{1, "aa ;bb", "AA ;bb"},
