@@ -89,15 +89,14 @@ func (p *columnProc) warn(err error) {
 }
 
 func chomp(b []byte) []byte {
-	for {
-		if len(b) == 0 {
-			return b
-		}
+outer:
+	for len(b) > 0 {
 		switch l := len(b) - 1; b[l] {
 		case '\n', '\r':
 			b = b[:l]
 		default:
-			return b
+			break outer
 		}
 	}
+	return b
 }
