@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var cmd = []string{"perl", "-e", `print uc $ARGV[0], "\r\n"`}
+var cmd = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]"`}
 
 var tab = []struct {
 	sel    int
@@ -14,27 +14,38 @@ var tab = []struct {
 	output string
 }{
 	{1, "", ""},
+	{1, ";", ";"},
+	{1, ";;", ";;"},
 	{1, " ", " "},
 	{1, "  ", "  "},
-	{1, "aa", "AA"},
-	{1, "aa  ", "AA  "},
-	{1, "  aa", "  AA"},
-	{1, "  aa  ", "  AA  "},
-	{1, "aa;bb", "AA;bb"},
-	{1, "aa; bb", "AA; bb"},
-	{1, "aa ;bb", "AA ;bb"},
-	{1, "aa ; bb", "AA ; bb"},
-	{1, " aa; bb", " AA; bb"},
-	{2, "aa;bb", "aa;BB"},
-	{2, "aa;bb ", "aa;BB "},
-	{2, "aa; bb", "aa; BB"},
-	{2, "aa ;bb", "aa ;BB"},
-	{2, "aa ; bb", "aa ; BB"},
+	{1, "aa", "[AA]"},
+	{1, "aa  ", "[AA]  "},
+	{1, "  aa", "  [AA]"},
+	{1, "  aa  ", "  [AA]  "},
+	{1, "aa;bb", "[AA];bb"},
+	{1, "aa; bb", "[AA]; bb"},
+	{1, "aa ;bb", "[AA] ;bb"},
+	{1, "aa ; bb", "[AA] ; bb"},
+	{1, " aa; bb", " [AA]; bb"},
+	{2, "aa;bb", "aa;[BB]"},
+	{2, "aa;bb ", "aa;[BB] "},
+	{2, "aa; bb", "aa; [BB]"},
+	{2, "aa ;bb", "aa ;[BB]"},
+	{2, "aa ; bb", "aa ; [BB]"},
 	{3, "aa;bb", "aa;bb"},
-	{-1, "aa", "AA"},
-	{-1, "aa;bb", "aa;BB"},
-	{-2, "aa;bb", "AA;bb"},
+	{-1, "aa", "[AA]"},
+	{-1, "aa;bb", "aa;[BB]"},
+	{-2, "aa;bb", "[AA];bb"},
 	{-3, "aa;bb", "aa;bb"},
+	{1, " aa; bb;cc ; dd ;", " [AA]; bb;cc ; dd ;"},
+	{2, " aa; bb;cc ; dd ;", " aa; [BB];cc ; dd ;"},
+	{3, " aa; bb;cc ; dd ;", " aa; bb;[CC] ; dd ;"},
+	{4, " aa; bb;cc ; dd ;", " aa; bb;cc ; [DD] ;"},
+	{1, "multi word; bb", "[MULTI WORD]; bb"},
+	{1, "multi word ; bb", "[MULTI WORD] ; bb"},
+	{1, " multi word; bb", " [MULTI WORD]; bb"},
+	{1, " multi word ; bb", " [MULTI WORD] ; bb"},
+	{1, " multi word  ; bb", " [MULTI WORD]  ; bb"},
 	{0, "aa;bb", "aa;bb"},
 }
 

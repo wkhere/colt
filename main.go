@@ -63,6 +63,7 @@ func (p *columnProc) process(line string) {
 	}
 
 	for i, col := range cols {
+		col = normalizeColumn(col)
 		for _, token := range col {
 			if token.typ == tokenData && i == selectedIdx {
 				p.processData(token.val)
