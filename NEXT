@@ -1,18 +1,16 @@
 + switch to string in lexer, as exec.Command also needs string
++ simple hand-crafted flag parser for -N/+N etc
 - more meaningful error message from subprocess
-+ or simple hand-crafted flag parser for -N/+N etc
 + show proper usage with subcommand
 + allow negative column numbers and make -1 (last column) a default
   + perfect for passdb case
   + requires column caching
 + strip CRLF from subprocess output
-- multi-character separator
 
 - allow quoted text in columns
 
-- bug#1:
-  selected column should go to subcmd as a whole, even with spaces, minus
-  leading spaces
-  ..use csv?
+- bug#1 [multiword data]:
+  selected column should go to subcmd as data with spaces inside,
+  minus leading and trailing spaces
 
 # vi:sw=2:expandtab
