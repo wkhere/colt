@@ -6,7 +6,10 @@ import (
 	"testing"
 )
 
-var cmd = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]"`}
+var (
+	cmd       = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]"`}
+	cmdWithLF = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]\n"`}
+)
 
 var tab = []struct {
 	sel    int
@@ -49,7 +52,8 @@ var tab = []struct {
 	{0, "aa;bb", "aa;bb"},
 }
 
-func TestProcess(t *testing.T) {
+func testWithCmd(cmd []string, t *testing.T) {
+	t.Helper()
 	for i, tc := range tab {
 		var b bytes.Buffer
 		p := columnProc{
@@ -64,6 +68,14 @@ func TestProcess(t *testing.T) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v", i, res, tc.output)
 		}
 	}
+}
+
+func TestProcess(t *testing.T) {
+	testWithCmd(cmd, t)
+}
+
+func TestProcessWithLFResult(t *testing.T) {
+	testWithCmd(cmdWithLF, t)
 }
 
 func BenchmarkProcess(b *testing.B) {
