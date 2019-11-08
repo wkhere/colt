@@ -27,6 +27,11 @@ var lexTab = []struct {
 		{tokenData, "foo"}, sep,
 		{tokenSpace, "  "}, {tokenData, "bar"},
 	}},
+	{`foo; "a;b;c"; "bar"`, ts{
+		{tokenData, "foo"}, sep, {tokenSpace, " "},
+		{tokenData, `"a;b;c"`}, sep, {tokenSpace, " "},
+		{tokenData, `"bar"`},
+	}},
 }
 
 func (t token) String() string {
@@ -37,7 +42,7 @@ var eq = reflect.DeepEqual
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		if res := lexTokens(tc.line, ';').flatten(); !eq(res, tc.tokens) {
+		if res := lexTokens(tc.line, ';', '"').flatten(); !eq(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
 				i, res, tc.tokens)
 		}

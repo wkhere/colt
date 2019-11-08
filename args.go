@@ -15,6 +15,7 @@ var (
 func (p *columnProc) parseArgs(args []string) {
 	p.selection = -1
 	p.separator = ';'
+	p.quote = '"'
 
 loop:
 	for i, arg := range args {

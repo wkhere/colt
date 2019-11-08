@@ -23,9 +23,10 @@ type token struct {
 
 type tokenStream <-chan token
 
-func lexTokens(input string, sep rune) tokenStream {
+func lexTokens(input string, sep, quote rune) tokenStream {
 	l := &lexer{
 		sep:    sep,
+		quote:  quote,
 		input:  input,
 		tokens: make(chan token),
 	}
@@ -56,7 +57,7 @@ func (ts tokenStream) group() (res [][]token) {
 // engine
 
 type lexer struct {
-	sep        rune
+	sep, quote rune
 	input      string
 	start, pos int
 	lastw      int
@@ -79,7 +80,10 @@ func (l *lexer) emit(t tokenType) {
 
 // input-consuming primitives
 
-const cEOF rune = -1
+const (
+	cEOF rune = -1
+	cLF       = '\n'
+)
 
 func (l *lexer) readc() (c rune) {
 	c, l.lastw = utf8.DecodeRuneInString(l.input[l.pos:])
@@ -93,6 +97,10 @@ func (l *lexer) readc() (c rune) {
 // backup can be used only once after each readc.
 func (l *lexer) backup() {
 	l.pos -= l.lastw
+}
+
+func (l *lexer) unbackup() {
+	l.pos += l.lastw
 }
 
 // func (l *lexer) peek() rune {
@@ -127,6 +135,8 @@ func lexStart(l *lexer) stateFn {
 	case c == l.sep:
 		l.emit(tokenSep)
 		return lexStart
+	case c == l.quote:
+		return lexQuoted
 	case unicode.IsSpace(c):
 		return lexSpace
 	default:
@@ -145,6 +155,28 @@ func lexData(l *lexer) stateFn {
 	l.skipUntil(func(c rune) bool {
 		return c == l.sep || unicode.IsSpace(c)
 	})
+	l.emit(tokenData)
+	return lexStart
+}
+
+func lexQuoted(l *lexer) stateFn {
+	var unclosed bool
+	l.skipUntil(func(c rune) bool {
+		switch c {
+		case l.quote:
+			return true
+		case cLF:
+			unclosed = true
+			return true
+		default:
+			return false
+		}
+	})
+	if unclosed {
+		l.emit(tokenError)
+		return lexStart
+	}
+	l.unbackup()
 	l.emit(tokenData)
 	return lexStart
 }

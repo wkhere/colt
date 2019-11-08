@@ -17,10 +17,10 @@ func dieIf(err error) {
 }
 
 type columnProc struct {
-	separator      rune
-	selection      int
-	command        []string
-	stdout, stderr io.Writer
+	separator, quote rune
+	selection        int
+	command          []string
+	stdout, stderr   io.Writer
 }
 
 func main() {
@@ -53,7 +53,7 @@ func setupIdx(col, ncols int) (int, error) {
 
 func (p *columnProc) process(line string) {
 
-	cols := lexTokens(line, p.separator).group()
+	cols := lexTokens(line, p.separator, p.quote).group()
 
 	selectedIdx, err := setupIdx(p.selection, len(cols))
 	if err != nil {

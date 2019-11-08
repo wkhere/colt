@@ -49,6 +49,7 @@ var tab = []struct {
 	{1, " multi word; bb", " [MULTI WORD]; bb"},
 	{1, " multi word ; bb", " [MULTI WORD] ; bb"},
 	{1, " multi word  ; bb", " [MULTI WORD]  ; bb"},
+	{1, `"quoted; thing"; bb`, `["QUOTED; THING"]; bb`},
 	{0, "aa;bb", "aa;bb"},
 }
 
@@ -58,6 +59,7 @@ func testWithCmd(cmd []string, t *testing.T) {
 		var b bytes.Buffer
 		p := columnProc{
 			separator: ';',
+			quote:     '"',
 			selection: tc.sel,
 			command:   cmd,
 			stdout:    &b,
@@ -83,6 +85,7 @@ func BenchmarkProcess(b *testing.B) {
 		for _, tc := range tab {
 			p := columnProc{
 				separator: ';',
+				quote:     '"',
 				selection: tc.sel,
 				command:   cmd,
 				stdout:    ioutil.Discard,
