@@ -8,6 +8,7 @@
 + strip CRLF from subprocess output
 
 - allow quoted text in columns
+  the case is for example in-code doublequoted strings
 
 + bug#1 [multiword data]: fixed
   selected column goes to subcmd as data with spaces inside,
