@@ -5,11 +5,11 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var (
-	separatorFlag = 's'
-	selectionR    = regexp.MustCompile(`^[-+]?\d+$`)
+	selectionR = regexp.MustCompile(`^[-+]?\d+$`)
 )
 
 func (p *columnProc) parseArgs(args []string) {
@@ -25,11 +25,14 @@ loop:
 			case selectionR.MatchString(arg):
 				p.selection, _ = strconv.Atoi(arg)
 
-			case arg[0] == '-' && rune(arg[1]) == separatorFlag:
+			case strings.HasPrefix(arg, "-s"):
 				if len(arg[2:]) != 1 {
 					usage()
 				}
 				p.separator = rune(arg[2])
+
+			case arg == "-u":
+				p.unquote = true
 
 			default:
 				usage()
@@ -45,16 +48,14 @@ loop:
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `colt - copy input transforming chosen column with a given command.
+	fmt.Fprintln(os.Stderr, `colt - copy input transforming chosen column with a given command.
 
-usage: colt [+N|-N] [-%cS] command ...
+usage: colt [+N|-N] [-sS] [-u] command ...
 where:
-    N - column number, starting from 1;
-        when negative, counted from end; default -1 (last column)
-    S - 1-character column separator; default ';'
-    command - a command, possible with args, for transforming the column
-`,
-		separatorFlag,
-	)
+    -N|+N - column number, starting from 1;
+            when negative, counted from end; default -1 (last column)
+    -sS   - 1-character column separator; default ';'
+    -u    - unquote column content first
+    command - a command, possible with args, for transforming the column`)
 	os.Exit(2)
 }

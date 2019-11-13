@@ -14,4 +14,6 @@ leaving other columns as they are.
 `colt -s':' command` specifies the column separator
 (the default is `;`, it must be 1 character).
 
+`colt -u command` unquotes the content of a column before transformation.
+
 `command` should accept input data as an argument and print the output.

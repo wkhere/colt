@@ -19,6 +19,7 @@ func dieIf(err error) {
 type columnProc struct {
 	separator, quote rune
 	selection        int
+	unquote          bool
 	command          []string
 	stdout, stderr   io.Writer
 }
@@ -75,6 +76,9 @@ func (p *columnProc) process(line string) {
 }
 
 func (p *columnProc) processData(s string) {
+	if p.unquote {
+		s = unquote(s, string(p.quote))
+	}
 	var b bytes.Buffer
 	cmd := exec.Command(p.command[0], append(p.command[1:], s)...)
 	cmd.Env = append(os.Environ(), "COLOR=1")

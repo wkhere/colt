@@ -49,7 +49,8 @@ var tab = []struct {
 	{1, " multi word; bb", " [MULTI WORD]; bb"},
 	{1, " multi word ; bb", " [MULTI WORD] ; bb"},
 	{1, " multi word  ; bb", " [MULTI WORD]  ; bb"},
-	{1, `"quoted; thing"; bb`, `["QUOTED; THING"]; bb`},
+	{1, `"quoted; thing"; bb`, `[QUOTED; THING]; bb`},
+	{1, ` "quoted; thing" ; bb`, ` [QUOTED; THING] ; bb`},
 	{0, "aa;bb", "aa;bb"},
 }
 
@@ -60,6 +61,7 @@ func testWithCmd(cmd []string, t *testing.T) {
 		p := columnProc{
 			separator: ';',
 			quote:     '"',
+			unquote:   true,
 			selection: tc.sel,
 			command:   cmd,
 			stdout:    &b,

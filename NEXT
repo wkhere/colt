@@ -10,7 +10,7 @@
 + allow quoted text in columns
   the case is for example in-code doublequoted strings
 
-- allow unquoting of data
++ allow unquoting of data
 
 + bug#1 [multiword data]: fixed
   selected column goes to subcmd as data with spaces inside,
