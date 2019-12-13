@@ -32,6 +32,12 @@ var lexTab = []struct {
 		{tokenData, `"a;b;c"`}, sep, {tokenSpace, " "},
 		{tokenData, `"bar"`},
 	}},
+	{`"foo`, ts{
+		{tokenError, `"foo`},
+	}},
+	{`"foo` + "\n", ts{
+		{tokenError, `"foo`},
+	}},
 }
 
 func (t token) String() string {

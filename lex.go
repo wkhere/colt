@@ -160,21 +160,21 @@ func lexData(l *lexer) stateFn {
 }
 
 func lexQuoted(l *lexer) stateFn {
-	var unclosed bool
+	var closed bool
 	l.skipUntil(func(c rune) bool {
 		switch c {
 		case l.quote:
+			closed = true
 			return true
 		case cLF:
-			unclosed = true
 			return true
 		default:
 			return false
 		}
 	})
-	if unclosed {
+	if !closed {
 		l.emit(tokenError)
-		return lexStart
+		return nil
 	}
 	l.unbackup()
 	l.emit(tokenData)
