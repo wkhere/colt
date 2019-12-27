@@ -14,6 +14,7 @@ func TestUnquote(t *testing.T) {
 		{`"`, `"`},
 		{`foo`, `foo`},
 		{`"foo"`, `foo`},
+		{`"with spaces inside"`, `with spaces inside`},
 		{`"unfinished`, `"unfinished`},
 		{`unstarted"`, `unstarted"`},
 		{`unstarted2"..`, `unstarted2"..`},

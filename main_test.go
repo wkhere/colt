@@ -43,6 +43,8 @@ var tab = []struct {
 	{1, " aa; bb;cc ; dd ;", " [AA]; bb;cc ; dd ;"},
 	{2, " aa; bb;cc ; dd ;", " aa; [BB];cc ; dd ;"},
 	{3, " aa; bb;cc ; dd ;", " aa; bb;[CC] ; dd ;"},
+	{3, " aa; bb; cc; dd ;", " aa; bb; [CC]; dd ;"},
+	{3, " aa; bb; cc ; dd ;", " aa; bb; [CC] ; dd ;"},
 	{4, " aa; bb;cc ; dd ;", " aa; bb;cc ; [DD] ;"},
 	{1, "multi word; bb", "[MULTI WORD]; bb"},
 	{1, "multi word ; bb", "[MULTI WORD] ; bb"},
@@ -50,6 +52,8 @@ var tab = []struct {
 	{1, " multi word ; bb", " [MULTI WORD] ; bb"},
 	{1, " multi word  ; bb", " [MULTI WORD]  ; bb"},
 	{1, `"quoted; thing"; bb`, `[QUOTED; THING]; bb`},
+	{1, `"quoted; thing" ; bb`, `[QUOTED; THING] ; bb`},
+	{1, ` "quoted; thing"; bb`, ` [QUOTED; THING]; bb`},
 	{1, ` "quoted; thing" ; bb`, ` [QUOTED; THING] ; bb`},
 	{0, "aa;bb", "aa;bb"},
 }
