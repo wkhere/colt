@@ -13,6 +13,7 @@
 + allow unquoting of data
 
 + bug#1 [multiword data]: fixed
+  solution: 
   selected column goes to subcmd as data with spaces inside,
   minus leading and trailing spaces
 
