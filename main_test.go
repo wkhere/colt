@@ -82,7 +82,7 @@ func TestProcess(t *testing.T) {
 	testWithCmd(cmd, t)
 }
 
-func TestProcessWithLFResult(t *testing.T) {
+func TestProcessWithLF(t *testing.T) {
 	testWithCmd(cmdWithLF, t)
 }
 
