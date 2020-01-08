@@ -27,7 +27,11 @@ type columnProc struct {
 func main() {
 	p := columnProc{stdout: os.Stdout, stderr: os.Stderr}
 
-	p.parseArgs(os.Args[1:])
+	err := p.parseArgs(os.Args[1:])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 

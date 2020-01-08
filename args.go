@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -12,7 +11,7 @@ var (
 	selectionR = regexp.MustCompile(`^[-+]?\d+$`)
 )
 
-func (p *columnProc) parseArgs(args []string) {
+func (p *columnProc) parseArgs(args []string) error {
 	p.selection = -1
 	p.separator = ';'
 	p.quote = '"'
@@ -27,7 +26,7 @@ loop:
 
 			case strings.HasPrefix(arg, "-s"):
 				if len(arg[2:]) != 1 {
-					usage()
+					return usageErr
 				}
 				p.separator = rune(arg[2])
 
@@ -35,7 +34,7 @@ loop:
 				p.unquote = true
 
 			default:
-				usage()
+				return usageErr
 			}
 		default:
 			p.command = args[i:]
@@ -43,12 +42,13 @@ loop:
 		}
 	}
 	if len(p.command) == 0 {
-		usage()
+		return usageErr
 	}
+
+	return nil
 }
 
-func usage() {
-	fmt.Fprintln(os.Stderr, `colt - copy input transforming chosen column with a given command.
+var usageErr = fmt.Errorf(`colt - copy input transforming chosen column with a given command.
 
 usage: colt [+N|-N] [-sS] [-u] command ...
 where:
@@ -56,6 +56,5 @@ where:
             when negative, counted from end; default -1 (last column)
     -sS   - 1-character column separator; default ';'
     -u    - unquote column content first
-    command - a command, possible with args, for transforming the column`)
-	os.Exit(2)
-}
+    command - a command, possible with args, for transforming the column`,
+)
