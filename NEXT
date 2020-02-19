@@ -17,4 +17,8 @@
   selected column goes to subcmd as data with spaces inside,
   minus leading and trailing spaces
 
+- process bytes not string
+
+- turn into a lib (for single line) plus cmd
+
 # vi:sw=2:expandtab
