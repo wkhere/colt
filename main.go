@@ -3,18 +3,10 @@ package main
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
 )
-
-func dieIf(err error) {
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "colt:", err)
-		os.Exit(1)
-	}
-}
 
 type columnProc struct {
 	separator, quote rune
@@ -29,15 +21,14 @@ func main() {
 
 	err := p.parseArgs(os.Args[1:])
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(2)
+		die2(err)
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
 		p.process(scanner.Bytes())
-		fmt.Fprintln(p.stdout)
+		io.WriteString(p.stdout, "\n")
 	}
 
 	dieIf(scanner.Err())
@@ -50,7 +41,7 @@ func setupIdx(col, ncols int) (int, error) {
 	case col > 0 && col <= ncols:
 		return col - 1, nil
 	default:
-		return -1, fmt.Errorf(
+		return -1, errorf(
 			"invalid column selector #%d for %d columns",
 			col, ncols)
 	}
@@ -62,7 +53,7 @@ func (p *columnProc) process(line []byte) {
 
 	selectedIdx, err := setupIdx(p.selection, len(cols))
 	if err != nil {
-		p.warn(err)
+		fwarn(p.stderr, err)
 		p.stdout.Write(line)
 		return
 	}
@@ -91,8 +82,4 @@ func (p *columnProc) processData(d []byte) {
 	err := cmd.Run()
 	dieIf(err)
 	p.stdout.Write(chomp(b.Bytes()))
-}
-
-func (p *columnProc) warn(err error) {
-	fmt.Fprintf(p.stderr, "WARN %v\n", err)
 }
