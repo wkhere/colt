@@ -96,15 +96,3 @@ func (p *columnProc) processData(d []byte) {
 func (p *columnProc) warn(err error) {
 	fmt.Fprintf(p.stderr, "WARN %v\n", err)
 }
-
-func chomp(b []byte) []byte {
-	for len(b) > 0 {
-		l := len(b) - 1
-		if b[l] == '\n' || b[l] == '\r' {
-			b = b[:l]
-		} else {
-			break
-		}
-	}
-	return b
-}
