@@ -1,12 +1,18 @@
 package main
 
-func unquote(s, q string) string {
-	l := len(q)
-	if len(s) < 2*l {
-		return s
+import "unicode/utf8"
+
+func unquote(b []byte, q rune) []byte {
+	l := utf8.RuneLen(q)
+	if len(b) < 2*l {
+		return b
 	}
-	if s[:l] == q && s[len(s)-l:len(s)] == q {
-		return s[l : len(s)-l]
+	eqq := func(p []byte) bool {
+		c, n := utf8.DecodeRune(p)
+		return c == q && n == len(p)
 	}
-	return s
+	if eqq(b[:l]) && eqq(b[len(b)-l:]) {
+		return b[l : len(b)-l]
+	}
+	return b
 }

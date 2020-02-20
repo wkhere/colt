@@ -25,8 +25,9 @@ func TestUnquote(t *testing.T) {
 	}
 
 	for i, tc := range tab {
-		res := unquote(tc.input, `"`)
-		if res != tc.want {
+		b := []byte(tc.input)
+		res := unquote(b, '"')
+		if string(res) != tc.want {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v", i, res, tc.want)
 		}
 	}

@@ -36,7 +36,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		p.process(scanner.Text())
+		p.process(scanner.Bytes())
 		fmt.Fprintln(p.stdout)
 	}
 
@@ -56,14 +56,14 @@ func setupIdx(col, ncols int) (int, error) {
 	}
 }
 
-func (p *columnProc) process(line string) {
+func (p *columnProc) process(line []byte) {
 
 	cols := lexTokens(line, p.separator, p.quote).group()
 
 	selectedIdx, err := setupIdx(p.selection, len(cols))
 	if err != nil {
 		p.warn(err)
-		fmt.Fprint(p.stdout, line)
+		p.stdout.Write(line)
 		return
 	}
 
@@ -74,17 +74,17 @@ func (p *columnProc) process(line string) {
 				p.processData(token.val)
 				continue
 			}
-			fmt.Fprint(p.stdout, token.val)
+			p.stdout.Write(token.val)
 		}
 	}
 }
 
-func (p *columnProc) processData(s string) {
+func (p *columnProc) processData(d []byte) {
 	if p.unquote {
-		s = unquote(s, string(p.quote))
+		d = unquote(d, p.quote)
 	}
 	var b bytes.Buffer
-	cmd := exec.Command(p.command[0], append(p.command[1:], s)...)
+	cmd := exec.Command(p.command[0], append(p.command[1:], string(d))...)
 	cmd.Env = append(os.Environ(), "COLOR=1")
 	cmd.Stdout = &b
 	cmd.Stderr = p.stderr

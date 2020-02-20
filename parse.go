@@ -1,6 +1,6 @@
 package main
 
-import "strings"
+import "bytes"
 
 func normalizeColumn(col []token) (res []token) {
 	res = make([]token, 0, len(col))
@@ -19,11 +19,11 @@ func normalizeColumn(col []token) (res []token) {
 	if i == j {
 		res = append(res, col[i])
 	} else {
-		var b strings.Builder
+		var b bytes.Buffer
 		for _, token := range col[i : j+1] {
-			b.WriteString(token.val)
+			b.Write(token.val)
 		}
-		res = append(res, token{typ: tokenData, val: b.String()})
+		res = append(res, token{typ: tokenData, val: b.Bytes()})
 	}
 
 	for j++; j < len(col); j++ {

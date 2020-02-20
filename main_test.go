@@ -61,19 +61,21 @@ var tab = []struct {
 func testWithCmd(cmd []string, t *testing.T) {
 	t.Helper()
 	for i, tc := range tab {
-		var b bytes.Buffer
+		b := []byte(tc.input)
+		o := new(bytes.Buffer)
 		p := columnProc{
 			separator: ';',
 			quote:     '"',
 			unquote:   true,
 			selection: tc.sel,
 			command:   cmd,
-			stdout:    &b,
+			stdout:    o,
 			stderr:    ioutil.Discard,
 		}
-		p.process(tc.input)
-		if res := b.String(); res != tc.output {
-			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v", i, res, tc.output)
+		p.process(b)
+		res := o.String()
+		if res != tc.output {
+			t.Errorf("tc[%d] mismatch\nhave %q\nwant %q", i, res, tc.output)
 		}
 	}
 }
@@ -97,7 +99,8 @@ func BenchmarkProcess(b *testing.B) {
 				stdout:    ioutil.Discard,
 				stderr:    ioutil.Discard,
 			}
-			p.process(tc.input)
+			b := []byte(tc.input)
+			p.process(b)
 		}
 	}
 }

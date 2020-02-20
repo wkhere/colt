@@ -7,36 +7,37 @@ import (
 )
 
 // shorter syntax in literals:
+type b = []byte
 type ts = []token
 
-var sep = token{tokenSep, ";"}
+var sep = token{tokenSep, b(";")}
 
 var lexTab = []struct {
 	line   string
 	tokens []token
 }{
 	{"", nil},
-	{"   ", ts{{tokenSpace, "   "}}},
-	{"foo", ts{{tokenData, "foo"}}},
+	{"   ", ts{{tokenSpace, b("   ")}}},
+	{"foo", ts{{tokenData, b("foo")}}},
 	{"foo bar", ts{
-		{tokenData, "foo"}, {tokenSpace, " "},
-		{tokenData, "bar"}}},
+		{tokenData, b("foo")}, {tokenSpace, b(" ")},
+		{tokenData, b("bar")}}},
 	{";", ts{sep}},
-	{"foo;", ts{{tokenData, "foo"}, sep}},
+	{"foo;", ts{{tokenData, b("foo")}, sep}},
 	{"foo;  bar", ts{
-		{tokenData, "foo"}, sep,
-		{tokenSpace, "  "}, {tokenData, "bar"},
+		{tokenData, b("foo")}, sep,
+		{tokenSpace, b("  ")}, {tokenData, b("bar")},
 	}},
 	{`foo; "a;b;c"; "bar"`, ts{
-		{tokenData, "foo"}, sep, {tokenSpace, " "},
-		{tokenData, `"a;b;c"`}, sep, {tokenSpace, " "},
-		{tokenData, `"bar"`},
+		{tokenData, b("foo")}, sep, {tokenSpace, b(" ")},
+		{tokenData, b(`"a;b;c"`)}, sep, {tokenSpace, b(" ")},
+		{tokenData, b(`"bar"`)},
 	}},
 	{`"foo`, ts{
-		{tokenError, `"foo`},
+		{tokenError, b(`"foo`)},
 	}},
 	{`"foo` + "\n", ts{
-		{tokenError, `"foo`},
+		{tokenError, b(`"foo`)},
 	}},
 }
 
@@ -48,7 +49,8 @@ var eq = reflect.DeepEqual
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		if res := lexTokens(tc.line, ';', '"').flatten(); !eq(res, tc.tokens) {
+		res := lexTokens(b(tc.line), ';', '"').flatten()
+		if !eq(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
 				i, res, tc.tokens)
 		}
