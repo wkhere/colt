@@ -7,4 +7,7 @@ cover:
 	go test -coverprofile cov
 	go tool cover -html cov
 
-.PHONY: go
+bench:
+	go test -bench=. -benchmem .
+
+.PHONY: go cover bench
