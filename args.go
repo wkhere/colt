@@ -7,9 +7,7 @@ import (
 	"strings"
 )
 
-var (
-	selectionR = regexp.MustCompile(`^[-+]?\d+$`)
-)
+var selectionR = regexp.MustCompile(`^[-+]\d+$`)
 
 func (p *columnProc) parseArgs(args []string) error {
 	p.selection = -1
