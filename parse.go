@@ -1,18 +1,22 @@
 package colt
 
-import "bytes"
+import (
+	"bytes"
 
-func normalizeColumn(col []token) (res []token) {
-	res = make([]token, 0, len(col))
+	"github.com/wkhere/colt/lex"
+)
+
+func normalizeColumn(col []lex.Token) (res []lex.Token) {
+	res = make([]lex.Token, 0, len(col))
 	var i, j int
 
-	for i = 0; i < len(col) && col[i].typ != tokenData; i++ {
+	for i = 0; i < len(col) && col[i].Type != lex.TokenData; i++ {
 		res = append(res, col[i])
 	}
 	if i == len(col) {
 		return res
 	}
-	for j = len(col) - 1; j > i && col[j].typ != tokenData; j-- {
+	for j = len(col) - 1; j > i && col[j].Type != lex.TokenData; j-- {
 	}
 	// now i is at the first data token and j at the last
 
@@ -21,9 +25,9 @@ func normalizeColumn(col []token) (res []token) {
 	} else {
 		var b bytes.Buffer
 		for _, token := range col[i : j+1] {
-			b.Write(token.val)
+			b.Write(token.Val)
 		}
-		res = append(res, token{typ: tokenData, val: b.Bytes()})
+		res = append(res, lex.Token{Type: lex.TokenData, Val: b.Bytes()})
 	}
 
 	for j++; j < len(col); j++ {

@@ -1,4 +1,4 @@
-package colt
+package lex
 
 import (
 	"unicode"
@@ -7,46 +7,46 @@ import (
 
 // lexer interface
 
-type tokenType uint
+type TokenType uint
 
 const (
-	tokenError tokenType = iota
-	tokenSpace
-	tokenSep
-	tokenData
+	TokenError TokenType = iota
+	TokenSpace
+	TokenSep
+	TokenData
 )
 
-type token struct {
-	typ tokenType
-	val []byte
+type Token struct {
+	Type TokenType
+	Val  []byte
 }
 
-type tokenStream <-chan token
+type TokenStream <-chan Token
 
-func lexTokens(input []byte, sep, quote rune) tokenStream {
+func LexTokens(input []byte, sep, quote rune) TokenStream {
 	l := &lexer{
 		sep:    sep,
 		quote:  quote,
 		input:  input,
-		tokens: make(chan token),
+		tokens: make(chan Token),
 	}
 	go l.run()
 	return l.tokens
 }
 
-func (ts tokenStream) flatten() (res []token) {
+func (ts TokenStream) Flatten() (res []Token) {
 	for tok := range ts {
 		res = append(res, tok)
 	}
 	return
 }
 
-func (ts tokenStream) group() (res [][]token) {
-	res = make([][]token, 1, 3)
+func (ts TokenStream) Group() (res [][]Token) {
+	res = make([][]Token, 1, 3)
 	groupIdx := 0
 	for tok := range ts {
 		res[groupIdx] = append(res[groupIdx], tok)
-		if tok.typ == tokenSep {
+		if tok.Type == TokenSep {
 			res = append(res, nil)
 			groupIdx++
 		}
@@ -61,7 +61,7 @@ type lexer struct {
 	input      []byte
 	start, pos int
 	lastw      int
-	tokens     chan token
+	tokens     chan Token
 }
 
 type stateFn func(*lexer) stateFn
@@ -73,8 +73,8 @@ func (l *lexer) run() {
 	close(l.tokens)
 }
 
-func (l *lexer) emit(t tokenType) {
-	l.tokens <- token{typ: t, val: l.input[l.start:l.pos]}
+func (l *lexer) emit(t TokenType) {
+	l.tokens <- Token{Type: t, Val: l.input[l.start:l.pos]}
 	l.start = l.pos
 }
 
@@ -133,7 +133,7 @@ func lexStart(l *lexer) stateFn {
 	case c == cEOF:
 		return nil
 	case c == l.sep:
-		l.emit(tokenSep)
+		l.emit(TokenSep)
 		return lexStart
 	case c == l.quote:
 		return lexQuoted
@@ -147,7 +147,7 @@ func lexStart(l *lexer) stateFn {
 
 func lexSpace(l *lexer) stateFn {
 	l.acceptAny(unicode.IsSpace)
-	l.emit(tokenSpace)
+	l.emit(TokenSpace)
 	return lexStart
 }
 
@@ -155,7 +155,7 @@ func lexData(l *lexer) stateFn {
 	l.skipUntil(func(c rune) bool {
 		return c == l.sep || unicode.IsSpace(c)
 	})
-	l.emit(tokenData)
+	l.emit(TokenData)
 	return lexStart
 }
 
@@ -173,10 +173,10 @@ func lexQuoted(l *lexer) stateFn {
 		}
 	})
 	if !closed {
-		l.emit(tokenError)
+		l.emit(TokenError)
 		return nil
 	}
 	l.unbackup()
-	l.emit(tokenData)
+	l.emit(TokenData)
 	return lexStart
 }

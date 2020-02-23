@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/wkhere/colt/lex"
 )
 
 type Colt struct {
@@ -17,7 +19,7 @@ type Colt struct {
 
 func (c *Colt) ProcessLine(line []byte) error {
 
-	cols := lexTokens(line, c.Separator, c.Quote).group()
+	cols := lex.LexTokens(line, c.Separator, c.Quote).Group()
 
 	selectedIdx, err := setupIdx(c.Selection, len(cols))
 	if err != nil {
@@ -28,14 +30,14 @@ func (c *Colt) ProcessLine(line []byte) error {
 	for i, col := range cols {
 		col = normalizeColumn(col)
 		for _, token := range col {
-			if token.typ == tokenData && i == selectedIdx {
-				err := c.ProcessData(token.val)
+			if token.Type == lex.TokenData && i == selectedIdx {
+				err := c.ProcessData(token.Val)
 				if err != nil {
 					return err
 				}
 				continue
 			}
-			c.Stdout.Write(token.val)
+			c.Stdout.Write(token.Val)
 		}
 	}
 	return nil
