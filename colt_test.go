@@ -1,4 +1,4 @@
-package main
+package colt
 
 import (
 	"bytes"
@@ -63,16 +63,16 @@ func testWithCmd(cmd []string, t *testing.T) {
 	for i, tc := range tab {
 		b := []byte(tc.input)
 		o := new(bytes.Buffer)
-		p := columnProc{
-			separator: ';',
-			quote:     '"',
-			unquote:   true,
-			selection: tc.sel,
-			command:   cmd,
-			stdout:    o,
-			stderr:    ioutil.Discard,
+		c := Colt{
+			Separator: ';',
+			Quote:     '"',
+			Unquote:   true,
+			Selection: tc.sel,
+			Command:   cmd,
+			Stdout:    o,
+			Stderr:    ioutil.Discard,
 		}
-		p.process(b)
+		c.ProcessLine(b)
 		res := o.String()
 		if res != tc.output {
 			t.Errorf("tc[%d] mismatch\nhave %q\nwant %q", i, res, tc.output)
@@ -91,16 +91,16 @@ func TestProcessWithLF(t *testing.T) {
 func BenchmarkProcess(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, tc := range tab {
-			p := columnProc{
-				separator: ';',
-				quote:     '"',
-				selection: tc.sel,
-				command:   cmd,
-				stdout:    ioutil.Discard,
-				stderr:    ioutil.Discard,
+			c := Colt{
+				Separator: ';',
+				Quote:     '"',
+				Selection: tc.sel,
+				Command:   cmd,
+				Stdout:    ioutil.Discard,
+				Stderr:    ioutil.Discard,
 			}
 			b := []byte(tc.input)
-			p.process(b)
+			c.ProcessLine(b)
 		}
 	}
 }

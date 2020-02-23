@@ -5,14 +5,16 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/wkhere/colt"
 )
 
 var selectionR = regexp.MustCompile(`^[-+]\d+$`)
 
-func (p *columnProc) parseArgs(args []string) error {
-	p.selection = -1
-	p.separator = ';'
-	p.quote = '"'
+func parseArgs(c *colt.Colt, args []string) error {
+	c.Selection = -1
+	c.Separator = ';'
+	c.Quote = '"'
 
 loop:
 	for i, arg := range args {
@@ -20,26 +22,26 @@ loop:
 		case '-', '+':
 			switch {
 			case selectionR.MatchString(arg):
-				p.selection, _ = strconv.Atoi(arg)
+				c.Selection, _ = strconv.Atoi(arg)
 
 			case strings.HasPrefix(arg, "-s"):
 				if len(arg[2:]) != 1 {
 					return usageErr
 				}
-				p.separator = rune(arg[2])
+				c.Separator = rune(arg[2])
 
 			case arg == "-u":
-				p.unquote = true
+				c.Unquote = true
 
 			default:
 				return usageErr
 			}
 		default:
-			p.command = args[i:]
+			c.Command = args[i:]
 			break loop
 		}
 	}
-	if len(p.command) == 0 {
+	if len(c.Command) == 0 {
 		return usageErr
 	}
 

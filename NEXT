@@ -19,6 +19,6 @@
 
 + process bytes not string
 
-- turn into a lib (for single line) plus cmd
+~ turn into a lib (for single line) plus cmd
 
 # vi:sw=2:expandtab

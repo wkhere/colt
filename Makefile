@@ -1,13 +1,13 @@
 go:
-	go fmt
-	go test -cover
-	go install
+	go fmt ./...
+	go test -cover ./...
+	go install ./...
 
 cover:
-	go test -coverprofile cov
+	go test -coverprofile cov ./...
 	go tool cover -html cov
 
 bench:
-	go test -bench=. -benchmem .
+	go test -bench=. -benchmem . ./...
 
 .PHONY: go cover bench

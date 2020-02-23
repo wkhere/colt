@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/wkhere/colt"
+)
 
 type a = []string
 
@@ -16,17 +20,17 @@ func TestSelectionArg(t *testing.T) {
 	}
 
 	for i, tc := range tab {
-		p := new(columnProc)
-		err := p.parseArgs(append(tc.opts, "echo"))
+		c := new(colt.Colt)
+		err := parseArgs(c, append(tc.opts, "echo"))
 		if tc.err != nil {
 			if err == nil {
 				t.Errorf("tc[%d] have nil, want error", i)
 			}
 			continue
 		}
-		if p.selection != tc.selection {
+		if c.Selection != tc.selection {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
-				i, p.selection, tc.selection)
+				i, c.Selection, tc.selection)
 		}
 	}
 

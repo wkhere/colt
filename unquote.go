@@ -1,4 +1,4 @@
-package main
+package colt
 
 import "unicode/utf8"
 

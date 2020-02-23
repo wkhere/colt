@@ -1,4 +1,4 @@
-package main
+package colt
 
 func chomp(b []byte) []byte {
 	for len(b) > 0 {
