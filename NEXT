@@ -1,3 +1,5 @@
+# vi:sw=2:expandtab
+
 + switch to string in lexer, as exec.Command also needs string
 + simple hand-crafted flag parser for -N/+N etc
 - more meaningful error message from subprocess
@@ -20,5 +22,3 @@
 + process bytes not string
 
 ~ turn into a lib (for single line) plus cmd
-
-# vi:sw=2:expandtab
