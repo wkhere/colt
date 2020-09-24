@@ -27,7 +27,7 @@ func ExampleMain() {
 	// a;b;["C;D"]
 }
 
-func feed(fp **os.File, b *bytes.Buffer) {
+func feed(fp **os.File, b io.Reader) {
 	pr, pw, err := os.Pipe()
 	if err != nil {
 		panic(err)
