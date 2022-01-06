@@ -11,7 +11,12 @@ func ExampleMain() {
 
 	os.Args = os.Args[:1]
 	os.Args = append(os.Args,
-		`perl`, `-e`, `print "[", uc($ARGV[0]), "]"`)
+		`-u`,
+		`perl`, `-e`, `print "[", uc($ARGV[0]), "]"`,
+	)
+	// Please note that on windows, passing quoted text to exec'ed scripts
+	// (but not to binaries, omg) seems broken.
+	// Thus, safer to use -u on windows...
 
 	b := new(bytes.Buffer)
 	b.WriteString("a;b;c\n")
@@ -24,7 +29,7 @@ func ExampleMain() {
 	// Output:
 	// a;b;[C]
 	// a;b;[C D]
-	// a;b;["C;D"]
+	// a;b;[C;D]
 }
 
 func feed(fp **os.File, b io.Reader) {
