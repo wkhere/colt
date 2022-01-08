@@ -17,6 +17,7 @@ func ExampleMain() {
 	// Please note that on windows, passing quoted text to exec'ed scripts
 	// (but not to binaries, omg) seems broken.
 	// Thus, safer to use -u on windows...
+	// Or, is it because of the feed/pipe trick?
 
 	b := new(bytes.Buffer)
 	b.WriteString("a;b;c\n")
