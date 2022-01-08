@@ -19,7 +19,10 @@
   selected column goes to subcmd as data with spaces inside,
   minus leading and trailing spaces
 
-+ process bytes not string
+--> process bytes not string - no, get back to string
+
+- refac parse package; move Group to parse; 
+  move Flatten to test
 
 + turn into a lib (for single line) plus cmd
 
