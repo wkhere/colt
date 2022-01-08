@@ -21,7 +21,7 @@
 
 + process bytes not string
 
-~ turn into a lib (for single line) plus cmd
++ turn into a lib (for single line) plus cmd
 
 - think of flag for just extracting the column, possibly with unquote,
   and pass to yet extra command (pbcopy|xsel!)
