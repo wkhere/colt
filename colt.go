@@ -7,6 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/wkhere/colt/lex"
+	"github.com/wkhere/colt/parse"
 )
 
 type Colt struct {
@@ -19,7 +20,7 @@ type Colt struct {
 
 func (c *Colt) ProcessLine(line []byte) error {
 
-	cols := lex.LexTokens(line, c.Separator, c.Quote).Group()
+	cols := parse.GroupTokens(lex.LexTokens(line, c.Separator, c.Quote))
 
 	selectedIdx, err := setupIdx(c.Selection, len(cols))
 	if err != nil {
@@ -28,7 +29,7 @@ func (c *Colt) ProcessLine(line []byte) error {
 	}
 
 	for i, col := range cols {
-		col = normalizeColumn(col)
+		col = parse.NormalizeColumn(col)
 		for _, token := range col {
 			if token.Type == lex.TokenData && i == selectedIdx {
 				err := c.ProcessData(token.Val)

@@ -45,11 +45,18 @@ func (t Token) String() string {
 	return fmt.Sprintf("{%d %q}", t.Type, t.Val)
 }
 
+func (ts TokenStream) flatten() (res []Token) {
+	for tok := range ts {
+		res = append(res, tok)
+	}
+	return
+}
+
 var eq = reflect.DeepEqual
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		res := LexTokens(b(tc.line), ';', '"').Flatten()
+		res := LexTokens(b(tc.line), ';', '"').flatten()
 		if !eq(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
 				i, res, tc.tokens)

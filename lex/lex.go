@@ -34,26 +34,6 @@ func LexTokens(input []byte, sep, quote rune) TokenStream {
 	return l.tokens
 }
 
-func (ts TokenStream) Flatten() (res []Token) {
-	for tok := range ts {
-		res = append(res, tok)
-	}
-	return
-}
-
-func (ts TokenStream) Group() (res [][]Token) {
-	res = make([][]Token, 1, 3)
-	groupIdx := 0
-	for tok := range ts {
-		res[groupIdx] = append(res[groupIdx], tok)
-		if tok.Type == TokenSep {
-			res = append(res, nil)
-			groupIdx++
-		}
-	}
-	return
-}
-
 // engine
 
 type lexer struct {

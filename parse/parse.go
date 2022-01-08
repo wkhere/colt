@@ -1,4 +1,4 @@
-package colt
+package parse
 
 import (
 	"bytes"
@@ -6,7 +6,23 @@ import (
 	"github.com/wkhere/colt/lex"
 )
 
-func normalizeColumn(col []lex.Token) (res []lex.Token) {
+// GroupTokens returns slice of groups of tokens, each group
+// being a tokens slice, divided by separator (lex.TokenSep).
+// Separator, if exists, is a last token in such group.
+func GroupTokens(ts lex.TokenStream) (res [][]lex.Token) {
+	res = make([][]lex.Token, 1, 3)
+	groupIdx := 0
+	for tok := range ts {
+		res[groupIdx] = append(res[groupIdx], tok)
+		if tok.Type == lex.TokenSep {
+			res = append(res, nil)
+			groupIdx++
+		}
+	}
+	return
+}
+
+func NormalizeColumn(col []lex.Token) (res []lex.Token) {
 	res = make([]lex.Token, 0, len(col))
 	var i, j int
 
