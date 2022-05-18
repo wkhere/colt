@@ -17,6 +17,9 @@ func parseArgs(c *colt.Colt, args []string) error {
 
 loop:
 	for i, arg := range args {
+		if len(arg) < 1 {
+			continue
+		}
 		switch arg[0] {
 		case '-', '+':
 			switch {
