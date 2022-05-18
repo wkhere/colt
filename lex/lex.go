@@ -152,7 +152,7 @@ func lexSpace(l *lexer) stateFn {
 
 func lexData(l *lexer) stateFn {
 	l.skipUntil(func(c rune) bool {
-		return c == l.sep || unicode.IsSpace(c)
+		return c == l.sep || c == l.quote || unicode.IsSpace(c)
 	})
 	l.emit(TokenData)
 	return lexStart

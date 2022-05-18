@@ -54,6 +54,20 @@ var lexTab = []struct {
 	{`"foo` + "\n", ts{
 		te(TokenError, `"foo`, "unclosed quote", 0, 4),
 	}},
+	{`123"foo"`, ts{
+		t(TokenData, "123"), t(TokenData, `"foo"`),
+	}},
+	{`123"foo"456`, ts{
+		t(TokenData, "123"), t(TokenData, `"foo"`), t(TokenData, "456"),
+	}},
+	{`123"foo`, ts{
+		t(TokenData, "123"),
+		te(TokenError, `"foo`, "unclosed quote", 3, 7),
+	}},
+	{`123"foo` + "\n", ts{
+		t(TokenData, "123"),
+		te(TokenError, `"foo`, "unclosed quote", 3, 7),
+	}},
 }
 
 // helpers
