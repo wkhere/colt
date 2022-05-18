@@ -25,6 +25,9 @@ loop:
 			switch {
 			case selectionR.MatchString(arg):
 				c.Selection, _ = strconv.Atoi(arg)
+				if c.Selection == 0 {
+					return usageErr
+				}
 
 			case strings.HasPrefix(arg, "-s"):
 				if len(arg[2:]) != 1 {
