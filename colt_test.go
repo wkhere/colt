@@ -3,6 +3,7 @@ package colt
 import (
 	"bytes"
 	"io/ioutil"
+	"strings"
 	"testing"
 )
 
@@ -11,55 +12,67 @@ var (
 	cmdWithLF = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]\n"`}
 )
 
-var tab = []struct {
+type testcase struct {
 	sel    int
 	input  string
 	output string
-}{
-	{1, "", ""},
-	{1, ";", ";"},
-	{1, ";;", ";;"},
-	{1, " ", " "},
-	{1, "  ", "  "},
-	{1, "aa", "[AA]"},
-	{1, "aa  ", "[AA]  "},
-	{1, "  aa", "  [AA]"},
-	{1, "  aa  ", "  [AA]  "},
-	{1, "aa;bb", "[AA];bb"},
-	{1, "aa; bb", "[AA]; bb"},
-	{1, "aa ;bb", "[AA] ;bb"},
-	{1, "aa ; bb", "[AA] ; bb"},
-	{1, " aa; bb", " [AA]; bb"},
-	{2, "aa;bb", "aa;[BB]"},
-	{2, "aa;bb ", "aa;[BB] "},
-	{2, "aa; bb", "aa; [BB]"},
-	{2, "aa ;bb", "aa ;[BB]"},
-	{2, "aa ; bb", "aa ; [BB]"},
-	{3, "aa;bb", "aa;bb"},
-	{-1, "aa", "[AA]"},
-	{-1, "aa;bb", "aa;[BB]"},
-	{-2, "aa;bb", "[AA];bb"},
-	{-3, "aa;bb", "aa;bb"},
-	{1, " aa; bb;cc ; dd ;", " [AA]; bb;cc ; dd ;"},
-	{2, " aa; bb;cc ; dd ;", " aa; [BB];cc ; dd ;"},
-	{3, " aa; bb;cc ; dd ;", " aa; bb;[CC] ; dd ;"},
-	{3, " aa; bb; cc; dd ;", " aa; bb; [CC]; dd ;"},
-	{3, " aa; bb; cc ; dd ;", " aa; bb; [CC] ; dd ;"},
-	{4, " aa; bb;cc ; dd ;", " aa; bb;cc ; [DD] ;"},
-	{1, "multi word; bb", "[MULTI WORD]; bb"},
-	{1, "multi word ; bb", "[MULTI WORD] ; bb"},
-	{1, " multi word; bb", " [MULTI WORD]; bb"},
-	{1, " multi word ; bb", " [MULTI WORD] ; bb"},
-	{1, " multi word  ; bb", " [MULTI WORD]  ; bb"},
-	{1, `"quoted; thing"; bb`, `[QUOTED; THING]; bb`},
-	{1, `"quoted; thing" ; bb`, `[QUOTED; THING] ; bb`},
-	{1, ` "quoted; thing"; bb`, ` [QUOTED; THING]; bb`},
-	{1, ` "quoted; thing" ; bb`, ` [QUOTED; THING] ; bb`},
-	{0, "aa;bb", "aa;bb"},
+	err    string
+}
+
+func t(sel int, i, o string) testcase {
+	return testcase{sel: sel, input: i, output: o}
+}
+func te(sel int, i, o string, e string) testcase {
+	return testcase{sel: sel, input: i, output: o, err: e}
+}
+
+var tab = []testcase{
+	t(1, "", ""),
+	t(1, ";", ";"),
+	t(1, ";;", ";;"),
+	t(1, " ", " "),
+	t(1, "  ", "  "),
+	t(1, "aa", "[AA]"),
+	t(1, "aa  ", "[AA]  "),
+	t(1, "  aa", "  [AA]"),
+	t(1, "  aa  ", "  [AA]  "),
+	t(1, "aa;bb", "[AA];bb"),
+	t(1, "aa; bb", "[AA]; bb"),
+	t(1, "aa ;bb", "[AA] ;bb"),
+	t(1, "aa ; bb", "[AA] ; bb"),
+	t(1, " aa; bb", " [AA]; bb"),
+	t(2, "aa;bb", "aa;[BB]"),
+	t(2, "aa;bb ", "aa;[BB] "),
+	t(2, "aa; bb", "aa; [BB]"),
+	t(2, "aa ;bb", "aa ;[BB]"),
+	t(2, "aa ; bb", "aa ; [BB]"),
+	te(3, "aa;bb", "aa;bb", "invalid column selector"),
+	t(-1, "aa", "[AA]"),
+	t(-1, "aa;bb", "aa;[BB]"),
+	t(-2, "aa;bb", "[AA];bb"),
+	te(-3, "aa;bb", "aa;bb", "invalid column selector"),
+	t(1, " aa; bb;cc ; dd ;", " [AA]; bb;cc ; dd ;"),
+	t(2, " aa; bb;cc ; dd ;", " aa; [BB];cc ; dd ;"),
+	t(3, " aa; bb;cc ; dd ;", " aa; bb;[CC] ; dd ;"),
+	t(3, " aa; bb; cc; dd ;", " aa; bb; [CC]; dd ;"),
+	t(3, " aa; bb; cc ; dd ;", " aa; bb; [CC] ; dd ;"),
+	t(4, " aa; bb;cc ; dd ;", " aa; bb;cc ; [DD] ;"),
+	t(1, "multi word; bb", "[MULTI WORD]; bb"),
+	t(1, "multi word ; bb", "[MULTI WORD] ; bb"),
+	t(1, " multi word; bb", " [MULTI WORD]; bb"),
+	t(1, " multi word ; bb", " [MULTI WORD] ; bb"),
+	t(1, " multi word  ; bb", " [MULTI WORD]  ; bb"),
+	t(1, `"quoted; thing"; bb`, `[QUOTED; THING]; bb`),
+	t(1, `"quoted; thing" ; bb`, `[QUOTED; THING] ; bb`),
+	t(1, ` "quoted; thing"; bb`, ` [QUOTED; THING]; bb`),
+	t(1, ` "quoted; thing" ; bb`, ` [QUOTED; THING] ; bb`),
+	te(1, `"unclosed quote`, "", "unclosed quote"),
+	te(0, "aa;bb", "aa;bb", "invalid column selector"),
 }
 
 func testWithCmd(cmd []string, t *testing.T) {
 	t.Helper()
+
 	for i, tc := range tab {
 		b := []byte(tc.input)
 		o := new(bytes.Buffer)
@@ -72,10 +85,27 @@ func testWithCmd(cmd []string, t *testing.T) {
 			Stdout:    o,
 			Stderr:    ioutil.Discard,
 		}
-		c.ProcessLine(b)
+		err := c.ProcessLine(b)
 		res := o.String()
-		if res != tc.output {
-			t.Errorf("tc[%d] mismatch\nhave %q\nwant %q", i, res, tc.output)
+
+		switch {
+		case tc.err == "" && err != nil:
+			t.Errorf("tc#%d unexpected error: %v", i, err)
+		case tc.err != "" && err == nil:
+			t.Errorf(
+				"tc#%d no error; want error with substring: %v",
+				i, tc.err)
+		case tc.err != "" && err != nil:
+			if !strings.Contains(err.Error(), tc.err) {
+				t.Errorf(
+					"tc#%d error mismatch\nhave: %v\nwant substring: %v",
+					i, err, tc.err)
+			}
+		default:
+			if res != tc.output {
+				t.Errorf("tc#%d mismatch\nhave %q\nwant %q",
+					i, res, tc.output)
+			}
 		}
 	}
 }
