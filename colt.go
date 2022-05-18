@@ -74,7 +74,7 @@ func setupIdx(col, ncols int) (int, error) {
 		return col - 1, nil
 	default:
 		return -1, errorf(
-			"invalid column selector #%d for %d columns",
+			"invalid column number %d, have %d column(s)",
 			col, ncols)
 	}
 }

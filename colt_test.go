@@ -46,11 +46,11 @@ var tab = []testcase{
 	t(2, "aa; bb", "aa; [BB]"),
 	t(2, "aa ;bb", "aa ;[BB]"),
 	t(2, "aa ; bb", "aa ; [BB]"),
-	te(3, "aa;bb", "aa;bb", "invalid column selector"),
+	te(3, "aa;bb", "aa;bb", "invalid column number"),
 	t(-1, "aa", "[AA]"),
 	t(-1, "aa;bb", "aa;[BB]"),
 	t(-2, "aa;bb", "[AA];bb"),
-	te(-3, "aa;bb", "aa;bb", "invalid column selector"),
+	te(-3, "aa;bb", "aa;bb", "invalid column number"),
 	t(1, " aa; bb;cc ; dd ;", " [AA]; bb;cc ; dd ;"),
 	t(2, " aa; bb;cc ; dd ;", " aa; [BB];cc ; dd ;"),
 	t(3, " aa; bb;cc ; dd ;", " aa; bb;[CC] ; dd ;"),
@@ -67,7 +67,7 @@ var tab = []testcase{
 	t(1, ` "quoted; thing"; bb`, ` [QUOTED; THING]; bb`),
 	t(1, ` "quoted; thing" ; bb`, ` [QUOTED; THING] ; bb`),
 	te(1, `"unclosed quote`, "", "unclosed quote"),
-	te(0, "aa;bb", "aa;bb", "invalid column selector"),
+	te(0, "aa;bb", "aa;bb", "invalid column number"),
 }
 
 func testWithCmd(cmd []string, t *testing.T) {
