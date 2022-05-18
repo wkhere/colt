@@ -10,7 +10,6 @@ import (
 // shorter syntax in literals:
 type b = []byte
 type ts = []Token
-type pos = [2]int
 
 func t(tt TokenType, data string) Token {
 	return Token{Type: tt, Val: b(data)}
