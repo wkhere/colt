@@ -22,5 +22,5 @@ func dieIf(err error) {
 }
 
 func warn(err error) {
-	fmt.Fprintf(os.Stderr, "WARN %v\n", err)
+	fmt.Fprintf(os.Stderr, "--WARN %v\n", err)
 }

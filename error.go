@@ -9,7 +9,3 @@ func errorf(format string, a ...interface{}) error {
 type Warning struct {
 	error
 }
-
-func (w Warning) Error() string {
-	return fmt.Sprintf("WARN %v\n", w.error)
-}
