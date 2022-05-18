@@ -1,6 +1,7 @@
 package lex
 
 import (
+	"fmt"
 	"unicode"
 	"unicode/utf8"
 )
@@ -19,6 +20,7 @@ const (
 type Token struct {
 	Type TokenType
 	Val  []byte
+	Err  *Error
 }
 
 type TokenStream <-chan Token
@@ -32,6 +34,15 @@ func LexTokens(input []byte, sep, quote rune) TokenStream {
 	}
 	go l.run()
 	return l.tokens
+}
+
+type Error struct {
+	Text       string
+	Start, End int
+}
+
+func (e *Error) Error() string {
+	return fmt.Sprintf("%s at [%d:%d]", e.Text, e.Start, e.End)
 }
 
 // engine
@@ -55,6 +66,14 @@ func (l *lexer) run() {
 
 func (l *lexer) emit(t TokenType) {
 	l.tokens <- Token{Type: t, Val: l.input[l.start:l.pos]}
+	l.start = l.pos
+}
+
+func (l *lexer) emitError(text string) {
+	l.tokens <- Token{
+		Type: TokenError, Val: l.input[l.start:l.pos],
+		Err: &Error{text, l.start, l.pos},
+	}
 	l.start = l.pos
 }
 
@@ -153,7 +172,7 @@ func lexQuoted(l *lexer) stateFn {
 		}
 	})
 	if !closed {
-		l.emit(TokenError)
+		l.emitError("unclosed quote")
 		return nil
 	}
 	l.unbackup()
