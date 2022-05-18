@@ -1,1 +1,4 @@
 /cov
+/dis*[0-9]
+/colt
+/colt.exe
