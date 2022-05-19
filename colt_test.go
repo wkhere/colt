@@ -27,7 +27,7 @@ func te(sel int, i, o string, e string) testcase {
 }
 
 var tab = []testcase{
-	t(1, "", ""),
+	te(1, "", "", "invalid column number"),
 	t(1, ";", ";"),
 	t(1, ";;", ";;"),
 	t(1, " ", " "),

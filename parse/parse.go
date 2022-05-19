@@ -19,6 +19,9 @@ func GroupTokens(tt []lex.Token) (res [][]lex.Token) {
 			groupIdx++
 		}
 	}
+	if last := len(res) - 1; res[last] == nil {
+		res = res[:last]
+	}
 	return
 }
 
