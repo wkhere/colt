@@ -1,7 +1,6 @@
 package lex
 
 import (
-	"fmt"
 	"unicode"
 	"unicode/utf8"
 )
@@ -39,10 +38,6 @@ func LexTokens(input []byte, sep, quote rune) TokenStream {
 type Error struct {
 	Text       string
 	Start, End int
-}
-
-func (e *Error) Error() string {
-	return fmt.Sprintf("%s at [%d:%d]", e.Text, e.Start, e.End)
 }
 
 // engine
