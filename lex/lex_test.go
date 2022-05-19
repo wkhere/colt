@@ -69,7 +69,7 @@ var lexTab = []struct {
 	}},
 }
 
-// helpers
+// pretty-print
 
 func (t Token) String() string {
 	if t.Err != nil {
@@ -78,18 +78,11 @@ func (t Token) String() string {
 	return fmt.Sprintf("{%d %q}", t.Type, t.Val)
 }
 
-func (ts TokenStream) flatten() (res []Token) {
-	for tok := range ts {
-		res = append(res, tok)
-	}
-	return
-}
-
 // tests
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		res := LexTokens(b(tc.line), ';', '"').flatten()
+		res, _ := LexTokens(b(tc.line), ';', '"').Gather()
 		if !reflect.DeepEqual(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
 				i, res, tc.tokens)
