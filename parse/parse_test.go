@@ -53,6 +53,11 @@ var grouptab = []struct {
 	{ts{sep, spc}, tg{ts{sep}, ts{spc}}},
 	{ts{spc, sep, spc}, tg{ts{spc, sep}, ts{spc}}},
 	{ts{d1, sep, spc, sep, d2}, tg{ts{d1, sep}, ts{spc, sep}, ts{d2}}},
+	{ts{sep, sep}, tg{ts{sep}, ts{sep}}},
+	{ts{sep, sep, spc}, tg{ts{sep}, ts{sep}, ts{spc}}},
+	{ts{sep, sep, d1}, tg{ts{sep}, ts{sep}, ts{d1}}},
+	{ts{d1, sep, sep}, tg{ts{d1, sep}, ts{sep}}},
+	{ts{d1, sep, sep, spc}, tg{ts{d1, sep}, ts{sep}, ts{spc}}},
 }
 
 var normtab = []struct {

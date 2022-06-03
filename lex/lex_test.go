@@ -37,6 +37,9 @@ var lexTab = []struct {
 		t(TokenData, "bar"),
 	}},
 	{";", ts{sep}},
+	{";;", ts{sep, sep}},
+	{"; ;", ts{sep, t(TokenSpace, " "), sep}},
+	{";;;", ts{sep, sep, sep}},
 	{"foo;", ts{t(TokenData, "foo"), sep}},
 	{"foo;  bar", ts{
 		t(TokenData, "foo"), sep,
