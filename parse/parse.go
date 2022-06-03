@@ -34,6 +34,7 @@ func NormalizeColumn(col []lex.Token) (res []lex.Token) {
 	}
 	if i == len(col) {
 		return res
+		// todo: return error or bool indicating no data?
 	}
 	for j = len(col) - 1; j > i && col[j].Type != lex.TokenData; j-- {
 	}
