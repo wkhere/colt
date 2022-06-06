@@ -1,6 +1,6 @@
 sel=. # selection for test fuzz bench
 opt=  # options for fuzz
-
+cnt=2 # repetitions for bench
 
 go:
 	go fmt  ./...
@@ -19,6 +19,6 @@ cover:
 	go tool cover -html cov
 
 bench:
-	go test -bench=$(sel) -benchmem . ./...
+	go test -bench=$(sel) -count=$(cnt) -benchmem . ./...
 
 .PHONY: go cover bench
