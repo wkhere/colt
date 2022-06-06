@@ -14,11 +14,12 @@ type Colt struct {
 
 func (c *Colt) ProcessLine(line []byte) error {
 
-	ts := lex.LexTokens(line, c.Separator, c.Quote)
-	cols, err := parse.GroupTokens(ts)
+	tt, err := lex.LexTokens(line, c.Separator, c.Quote).Gather()
 	if err != nil {
 		return Warning{err}
 	}
+
+	cols := parse.GroupTokens(tt)
 
 	selectedIdx, err := setupIdx(c.Selection, len(cols))
 	if err != nil {

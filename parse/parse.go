@@ -2,7 +2,6 @@ package parse
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/wkhere/colt/lex"
 )
@@ -10,13 +9,10 @@ import (
 // GroupTokens returns slice of groups of tokens, each group
 // being a tokens slice, divided by separator (lex.TokenSep).
 // Separator, if exists, is a last token in such group.
-func GroupTokens(ts lex.TokenStream) (res [][]lex.Token, _ error) {
+func GroupTokens(tt []lex.Token) (res [][]lex.Token) {
 	res = make([][]lex.Token, 1, 3)
 	groupIdx := 0
-	for tok := range ts {
-		if tok.Type == lex.TokenError {
-			return res, fmt.Errorf("error from lex: %w", tok.Err)
-		}
+	for _, tok := range tt {
 		res[groupIdx] = append(res[groupIdx], tok)
 		if tok.Type == lex.TokenSep {
 			res = append(res, nil)
