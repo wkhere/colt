@@ -2,15 +2,26 @@ package colt
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"strings"
 	"testing"
 )
 
 var (
-	cmd       = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]"`}
+	cmdNoLF   = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]"`}
 	cmdWithLF = []string{"perl", "-e", `print "[", uc($ARGV[0]), "]\n"`}
 )
+
+type softT struct{ io.Writer }
+
+func (t softT) Copy(b []byte) error { t.Write(b); return nil }
+func (t softT) Transform(b []byte) error {
+	t.Write([]byte{'['})
+	t.Write(bytes.ToUpper(b))
+	t.Write([]byte{']'})
+	return nil
+}
 
 type testcase struct {
 	sel    int
@@ -70,7 +81,25 @@ var tab = []testcase{
 	te(0, "aa;bb", "aa;bb", "invalid column number"),
 }
 
+func testWithSoftT(t *testing.T) {
+	t.Helper()
+	test(t, func(w io.Writer) Transformer {
+		return softT{w}
+	})
+}
+
 func testWithCmd(cmd []string, t *testing.T) {
+	t.Helper()
+	test(t, func(w io.Writer) Transformer {
+		return &CommandT{
+			Command: cmd,
+			Stdout:  w,
+			Stderr:  ioutil.Discard,
+		}
+	})
+}
+
+func test(t *testing.T, trgen func(io.Writer) Transformer) {
 	t.Helper()
 
 	for i, tc := range tab {
@@ -81,11 +110,7 @@ func testWithCmd(cmd []string, t *testing.T) {
 			Quote:     '"',
 			Unquote:   true,
 			Selection: tc.sel,
-			T: &CommandT{
-				Command: cmd,
-				Stdout:  o,
-				Stderr:  ioutil.Discard,
-			},
+			T:         trgen(o),
 		}
 		err := c.ProcessLine(b)
 		res := o.String()
@@ -112,15 +137,33 @@ func testWithCmd(cmd []string, t *testing.T) {
 	}
 }
 
-func TestProcess(t *testing.T) {
-	testWithCmd(cmd, t)
+func TestProcessSoft(t *testing.T) {
+	testWithSoftT(t)
 }
 
-func TestProcessWithLF(t *testing.T) {
+func TestProcessCmd(t *testing.T) {
+	testWithCmd(cmdNoLF, t)
+}
+
+func TestProcessCMDWithLF(t *testing.T) {
 	testWithCmd(cmdWithLF, t)
 }
 
-func BenchmarkProcess(b *testing.B) {
+func BenchmarkProcessSoft(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for _, tc := range tab {
+			c := Colt{
+				Separator: ';',
+				Quote:     '"',
+				Selection: tc.sel,
+				T:         softT{io.Discard},
+			}
+			b := []byte(tc.input)
+			c.ProcessLine(b)
+		}
+	}
+}
+func BenchmarkProcessCmd(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, tc := range tab {
 			c := Colt{
@@ -128,7 +171,7 @@ func BenchmarkProcess(b *testing.B) {
 				Quote:     '"',
 				Selection: tc.sel,
 				T: &CommandT{
-					Command: cmd,
+					Command: cmdNoLF,
 					Stdout:  ioutil.Discard,
 					Stderr:  ioutil.Discard,
 				},
