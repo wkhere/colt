@@ -81,9 +81,11 @@ func testWithCmd(cmd []string, t *testing.T) {
 			Quote:     '"',
 			Unquote:   true,
 			Selection: tc.sel,
-			Command:   cmd,
-			Stdout:    o,
-			Stderr:    ioutil.Discard,
+			T: &CommandT{
+				Command: cmd,
+				Stdout:  o,
+				Stderr:  ioutil.Discard,
+			},
 		}
 		err := c.ProcessLine(b)
 		res := o.String()
@@ -125,9 +127,11 @@ func BenchmarkProcess(b *testing.B) {
 				Separator: ';',
 				Quote:     '"',
 				Selection: tc.sel,
-				Command:   cmd,
-				Stdout:    ioutil.Discard,
-				Stderr:    ioutil.Discard,
+				T: &CommandT{
+					Command: cmd,
+					Stdout:  ioutil.Discard,
+					Stderr:  ioutil.Discard,
+				},
 			}
 			b := []byte(tc.input)
 			c.ProcessLine(b)

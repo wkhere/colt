@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	c := colt.Colt{Stdout: os.Stdout, Stderr: os.Stderr}
+	c := colt.Colt{T: &colt.CommandT{Stdout: os.Stdout, Stderr: os.Stderr}}
 
 	err := parseArgs(&c, os.Args[1:])
 	if err != nil {
@@ -26,7 +26,7 @@ func main() {
 		}
 		dieIf(err)
 
-		fmt.Fprintln(c.Stdout)
+		fmt.Println()
 	}
 
 	dieIf(scanner.Err())

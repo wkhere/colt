@@ -15,6 +15,11 @@ func parseArgs(c *colt.Colt, args []string) error {
 	c.Separator = ';'
 	c.Quote = '"'
 
+	ct, ok := c.T.(*colt.CommandT)
+	if !ok {
+		ct = new(colt.CommandT)
+	}
+
 loop:
 	for i, arg := range args {
 		if len(arg) < 1 {
@@ -42,11 +47,11 @@ loop:
 				return usageErr
 			}
 		default:
-			c.Command = args[i:]
+			ct.Command = args[i:]
 			break loop
 		}
 	}
-	if len(c.Command) == 0 {
+	if len(ct.Command) == 0 {
 		return usageErr
 	}
 

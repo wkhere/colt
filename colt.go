@@ -1,11 +1,6 @@
 package colt
 
 import (
-	"bytes"
-	"io"
-	"os"
-	"os/exec"
-
 	"github.com/wkhere/colt/lex"
 	"github.com/wkhere/colt/parse"
 )
@@ -14,8 +9,7 @@ type Colt struct {
 	Separator, Quote rune
 	Selection        int
 	Unquote          bool
-	Command          []string
-	Stdout, Stderr   io.Writer
+	T                Transformer
 }
 
 func (c *Colt) ProcessLine(line []byte) error {
@@ -29,7 +23,7 @@ func (c *Colt) ProcessLine(line []byte) error {
 
 	selectedIdx, err := setupIdx(c.Selection, len(cols))
 	if err != nil {
-		c.Stdout.Write(line)
+		c.T.Copy(line)
 		return Warning{err}
 	}
 
@@ -43,7 +37,7 @@ func (c *Colt) ProcessLine(line []byte) error {
 				}
 				continue
 			}
-			c.Stdout.Write(token.Val)
+			c.T.Copy(token.Val)
 		}
 	}
 	return nil
@@ -53,17 +47,7 @@ func (c *Colt) ProcessData(d []byte) error {
 	if c.Unquote {
 		d = unquote(d, c.Quote)
 	}
-	var b bytes.Buffer
-	cmd := exec.Command(c.Command[0], append(c.Command[1:], string(d))...)
-	cmd.Env = append(os.Environ(), "COLOR=1")
-	cmd.Stdout = &b
-	cmd.Stderr = c.Stderr
-	err := cmd.Run()
-	if err != nil {
-		return err
-	}
-	c.Stdout.Write(chomp(b.Bytes()))
-	return nil
+	return c.T.Transform(d)
 }
 
 func setupIdx(col, ncols int) (int, error) {
