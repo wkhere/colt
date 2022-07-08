@@ -76,6 +76,7 @@ func (l *lexer) emitError(text string) {
 
 const (
 	cEOF rune = -1
+	cBin      = 0
 	cLF       = '\n'
 )
 
@@ -146,17 +147,34 @@ func lexSpace(l *lexer) stateFn {
 }
 
 func lexData(l *lexer) stateFn {
+	var bin bool
 	l.skipUntil(func(c rune) bool {
-		return c == l.sep || c == l.quote || unicode.IsSpace(c)
+		switch {
+		case c == cBin:
+			bin = true
+			return true
+		case c == l.sep || c == l.quote || unicode.IsSpace(c):
+			return true
+		default:
+			return false
+		}
 	})
+	if bin {
+		l.unbackup()
+		l.emitError("binary data")
+		return nil
+	}
 	l.emit(TokenData)
 	return lexStart
 }
 
 func lexQuoted(l *lexer) stateFn {
-	var closed bool
+	var bin, closed bool
 	l.skipUntil(func(c rune) bool {
 		switch c {
+		case cBin:
+			bin = true
+			return true
 		case l.quote:
 			closed = true
 			return true
@@ -166,6 +184,11 @@ func lexQuoted(l *lexer) stateFn {
 			return false
 		}
 	})
+	if bin {
+		l.unbackup()
+		l.emitError("binary data")
+		return nil
+	}
 	if !closed {
 		l.emitError("unclosed quote")
 		return nil

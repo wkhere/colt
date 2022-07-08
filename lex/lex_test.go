@@ -74,6 +74,27 @@ var lexTab = []struct {
 		t(TokenData, "123"),
 		te(TokenError, `"foo`, "unclosed quote", 3, 7),
 	}},
+	{"\x00", ts{
+		te(TokenError, "\x00", "binary data", 0, 1),
+	}},
+	{"  \x00", ts{
+		t(TokenSpace, "  "),
+		te(TokenError, "\x00", "binary data", 2, 3),
+	}},
+	{"123\x00", ts{
+		te(TokenError, "123\x00", "binary data", 0, 4),
+	}},
+	{"123\x00456", ts{
+		te(TokenError, "123\x00", "binary data", 0, 4),
+	}},
+	{"123\"\x00", ts{
+		t(TokenData, "123"),
+		te(TokenError, "\"\x00", "binary data", 3, 5),
+	}},
+	{"123\"\x00456", ts{
+		t(TokenData, "123"),
+		te(TokenError, "\"\x00", "binary data", 3, 5),
+	}},
 }
 
 // pretty-print
