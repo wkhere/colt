@@ -70,6 +70,10 @@ var lexTab = []struct {
 		t(TokenData, "123"),
 		te(TokenError, `"foo`, "unclosed quote", 3, 7),
 	}},
+	{`123"foo` + "\n" + `456`, ts{
+		t(TokenData, "123"),
+		te(TokenError, `"foo`, "unclosed quote", 3, 7),
+	}},
 }
 
 // pretty-print
