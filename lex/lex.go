@@ -29,7 +29,7 @@ func LexTokens(input []byte, sep, quote rune) TokenStream {
 		sep:    sep,
 		quote:  quote,
 		input:  input,
-		tokens: make(chan Token),
+		tokens: make(chan Token, 20),
 	}
 	go l.run()
 	return l.tokens
