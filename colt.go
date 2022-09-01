@@ -14,7 +14,11 @@ type Colt struct {
 
 func (c *Colt) ProcessLine(line []byte) error {
 
-	ts := lex.LexTokens(line, c.Separator, c.Quote)
+	lexConf := lex.DefaultConfig
+	lexConf.Sep = c.Separator
+	lexConf.Quote = c.Quote
+
+	ts := lex.LexTokens(line, lexConf)
 	cols, err := parse.GroupTokens(ts)
 	if err != nil {
 		return Warning{err}

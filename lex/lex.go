@@ -24,12 +24,23 @@ type Token struct {
 
 type TokenStream <-chan Token
 
-func LexTokens(input []byte, sep, quote rune) TokenStream {
+type Config struct {
+	Sep, Quote rune
+	BufSize    int
+}
+
+var DefaultConfig = Config{
+	Sep:     ';',
+	Quote:   '"',
+	BufSize: 20,
+}
+
+func LexTokens(input []byte, conf Config) TokenStream {
 	l := &lexer{
-		sep:    sep,
-		quote:  quote,
+		sep:    conf.Sep,
+		quote:  conf.Quote,
 		input:  input,
-		tokens: make(chan Token, 20),
+		tokens: make(chan Token, conf.BufSize),
 	}
 	go l.run()
 	return l.tokens
