@@ -1,8 +1,14 @@
 ## colt
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/wkhere/colt.svg)](https://pkg.go.dev/github.com/wkhere/colt)
+
 ![](https://small.shootingsportsmedia.com/52544.jpg "BANG!")
 
 `colt` is COLumn Transformer.
+
+`colt` can be used as a command-line tool or as a library.
+Below is the description of the tool. For the library,
+see [the reference](https://pkg.go.dev/github.com/wkhere/colt).
 
 `colt +N command` transforms the Nth column of input with given command,
 leaving other columns as they are.
