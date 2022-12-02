@@ -20,5 +20,18 @@ jobs:
       run: |
         go get -v -t -d ./...
 
-    - name: Run tests
-      run:  make test
+    - name: Vet
+      run: go vet ./...
+
+    - name: Run tests & coverage
+      run: |
+        go test -v -coverprofile=coverage.out ./...
+
+    - name: Convert coverage to lcov
+      uses: jandelgado/gcov2lcov-action@v1
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: coverage.lcov
