@@ -1,5 +1,6 @@
 
 [![Build Status](https://github.com/wkhere/colt/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/wkhere/colt/actions/workflows/go.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wkhere/colt)](https://goreportcard.com/report/github.com/wkhere/colt)
 [![Go Reference](https://pkg.go.dev/badge/github.com/wkhere/colt.svg)](https://pkg.go.dev/github.com/wkhere/colt)
 
 ## colt
