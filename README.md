@@ -1,6 +1,8 @@
-## colt
 
+[![Build Status](https://github.com/wkhere/colt/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/wkhere/colt/actions/workflows/go.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/wkhere/colt.svg)](https://pkg.go.dev/github.com/wkhere/colt)
+
+## colt
 
 ![](https://small.shootingsportsmedia.com/52544.jpg "BANG!")
 
