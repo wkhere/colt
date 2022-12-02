@@ -1,6 +1,5 @@
 # vi:sw=2:expandtab
 
-+ switch to string in lexer, as exec.Command also needs string
 + simple hand-crafted flag parser for -N/+N etc
 - more meaningful error message from subprocess
 + show proper usage with subcommand
@@ -18,8 +17,6 @@
   solution: 
   selected column goes to subcmd as data with spaces inside,
   minus leading and trailing spaces
-
---> process bytes not string - no, get back to string
 
 + refac parse package; move Group to parse; 
   move Flatten to test
