@@ -29,7 +29,7 @@ var lexTab = []struct {
 	line   string
 	tokens []Token
 }{
-	{"", nil},
+	{"", ts{}},
 	{"   ", ts{t(TokenSpace, "   ")}},
 	{"foo", ts{t(TokenData, "foo")}},
 	{"foo bar", ts{
@@ -110,7 +110,7 @@ func (t Token) String() string {
 
 func TestLex(t *testing.T) {
 	for i, tc := range lexTab {
-		res, _ := LexTokens(b(tc.line), DefaultConfig).Gather()
+		res := LexTokens(b(tc.line), DefaultConfig)
 		if !reflect.DeepEqual(res, tc.tokens) {
 			t.Errorf("tc[%d] mismatch\nhave %v\nwant %v",
 				i, res, tc.tokens)
@@ -127,7 +127,7 @@ func FuzzLex(f *testing.F) {
 		end := len(data)
 		var buf bytes.Buffer
 
-		for tok := range LexTokens(b(data), DefaultConfig) {
+		for _, tok := range LexTokens(b(data), DefaultConfig) {
 			buf.Write(tok.Val)
 			if tok.Type == TokenError {
 				end = tok.Err.End

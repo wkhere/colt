@@ -93,7 +93,7 @@ var normtab = []struct {
 
 func TestParseGroup(t *testing.T) {
 	for i, tc := range grouptab {
-		res, err := GroupTokens(send(tc.tokens))
+		res, err := GroupTokens(tc.tokens)
 		if err != nil {
 			panic(err)
 		}
@@ -110,17 +110,4 @@ func TestParseNormalize(t *testing.T) {
 			t.Errorf("tc#%d mismatch\nhave %v\nwant %v", i, res, tc.norm)
 		}
 	}
-}
-
-// helpers
-
-func send(ts ts) TokenStream {
-	ch := make(chan Token)
-	go func() {
-		for _, t := range ts {
-			ch <- t
-		}
-		close(ch)
-	}()
-	return ch
 }

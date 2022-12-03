@@ -22,8 +22,6 @@ type Token struct {
 	Err  *Error
 }
 
-type TokenStream <-chan Token
-
 type Config struct {
 	Sep, Quote rune
 	BufSize    int
@@ -35,14 +33,14 @@ var DefaultConfig = Config{
 	BufSize: 20,
 }
 
-func LexTokens(input []byte, conf Config) TokenStream {
+func LexTokens(input []byte, conf Config) []Token {
 	l := &lexer{
 		sep:    conf.Sep,
 		quote:  conf.Quote,
 		input:  input,
-		tokens: make(chan Token, conf.BufSize),
+		tokens: make([]Token, 0, conf.BufSize),
 	}
-	go l.run()
+	l.run()
 	return l.tokens
 }
 
@@ -58,7 +56,7 @@ type lexer struct {
 	input      []byte
 	start, pos int
 	lastw      int
-	tokens     chan Token
+	tokens     []Token
 }
 
 type stateFn func(*lexer) stateFn
@@ -67,19 +65,18 @@ func (l *lexer) run() {
 	for st := lexStart; st != nil; {
 		st = st(l)
 	}
-	close(l.tokens)
 }
 
 func (l *lexer) emit(t TokenType) {
-	l.tokens <- Token{Type: t, Val: l.input[l.start:l.pos]}
+	l.tokens = append(l.tokens, Token{Type: t, Val: l.input[l.start:l.pos]})
 	l.start = l.pos
 }
 
 func (l *lexer) emitError(text string) {
-	l.tokens <- Token{
+	l.tokens = append(l.tokens, Token{
 		Type: TokenError, Val: l.input[l.start:l.pos],
 		Err: &Error{text, l.start, l.pos},
-	}
+	})
 	l.start = l.pos
 }
 

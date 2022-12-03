@@ -10,10 +10,10 @@ import (
 // GroupTokens returns slice of groups of tokens, each group
 // being a tokens slice, divided by separator (lex.TokenSep).
 // Separator, if exists, is a last token in such group.
-func GroupTokens(ts lex.TokenStream) (res [][]lex.Token, _ error) {
+func GroupTokens(ts []lex.Token) (res [][]lex.Token, _ error) {
 	res = make([][]lex.Token, 1, 3)
 	groupIdx := 0
-	for tok := range ts {
+	for _, tok := range ts {
 		if tok.Type == lex.TokenError {
 			return res, fmt.Errorf("lex: %w", tok.Err)
 		}
