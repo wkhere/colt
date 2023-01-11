@@ -29,3 +29,5 @@
 
 - flag for continuing processing lines on error, wih possible warning
   and printing the line untouched
+
+- Ragel lexer?
