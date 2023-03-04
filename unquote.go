@@ -2,6 +2,8 @@ package colt
 
 import "unicode/utf8"
 
+// todo: use strconv.Unquote instead
+
 func unquote(b []byte, q rune) []byte {
 	l := utf8.RuneLen(q)
 	if len(b) < 2*l {
