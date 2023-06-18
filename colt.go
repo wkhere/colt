@@ -18,6 +18,8 @@ func (c *Colt) ProcessLine(line []byte) error {
 	lexConf.Sep = c.Separator
 	lexConf.Quote = c.Quote
 
+	// todo: return tokens as Pos, no slice allocation
+	// tgen pass input to parse and extract chunks
 	ts := lex.LexTokens(line, lexConf)
 	cols, err := parse.GroupTokens(ts)
 	if err != nil {
