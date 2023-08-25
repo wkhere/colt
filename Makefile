@@ -2,13 +2,17 @@ sel=. # selection for test fuzz bench
 opt=  # options for fuzz
 cnt=2 # repetitions for bench
 
-go:
-	go vet  ./...
-	go test ./...
-	go install ./...
+target=./cmd/...
+
+default: test
+
+build:
+	go build $(target)
+
+install: test
+	go install $(target)
 
 test:
-	go vet ./...
 	go test -run=$(sel) ./...
 
 fuzz:
@@ -21,4 +25,4 @@ cover:
 bench:
 	go test -bench=$(sel) -count=$(cnt) -benchmem . ./...
 
-.PHONY: go cover bench
+.PHONY: go install test fuzz cover bench
