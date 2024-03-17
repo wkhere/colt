@@ -22,6 +22,11 @@ type Token struct {
 	Err  *Error
 }
 
+type Error struct {
+	Text       string
+	Start, End int
+}
+
 type Config struct {
 	Sep, Quote rune
 	BufSize    int
@@ -42,11 +47,6 @@ func LexTokens(input []byte, conf Config) []Token {
 	}
 	l.run()
 	return l.tokens
-}
-
-type Error struct {
-	Text       string
-	Start, End int
 }
 
 // engine
