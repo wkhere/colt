@@ -33,3 +33,5 @@
 - Ragel lexer?
 
 + simplify gha
+
+- get rid of dieIf
