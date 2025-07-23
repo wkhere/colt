@@ -16,6 +16,7 @@ var (
 type softT struct{ io.Writer }
 
 func (t softT) Copy(b []byte) error { t.Write(b); return nil }
+
 func (t softT) Transform(b []byte) error {
 	t.Write([]byte{'['})
 	t.Write(bytes.ToUpper(b))
