@@ -1,6 +1,8 @@
 package colt
 
 import (
+	"fmt"
+
 	"github.com/wkhere/colt/lex"
 	"github.com/wkhere/colt/parse"
 )
@@ -10,6 +12,10 @@ type Colt struct {
 	Selection        int
 	Unquote          bool
 	T                Transformer
+}
+
+type Warning struct {
+	error
 }
 
 func (c *Colt) ProcessLine(line []byte) error {
@@ -62,7 +68,7 @@ func setupIdx(col, ncols int) (int, error) {
 	case col > 0 && col <= ncols:
 		return col - 1, nil
 	default:
-		return -1, errorf(
+		return -1, fmt.Errorf(
 			"invalid column number %d, have %d column(s)",
 			col, ncols)
 	}
