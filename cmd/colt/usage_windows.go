@@ -2,7 +2,8 @@ package main
 
 import "fmt"
 
-var usageErr = fmt.Errorf(`colt - copy input transforming chosen column with a given command.
+var usageErr = fmt.Errorf(
+    `colt - copy input transforming chosen column with a given command.
 
 usage: colt [+N|-N] [-sS] [-u] command ...
 where:
