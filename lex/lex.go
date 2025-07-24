@@ -5,7 +5,7 @@ import (
 	"unicode/utf8"
 )
 
-// lexer interface
+// lexer api
 
 type TokenType uint
 
