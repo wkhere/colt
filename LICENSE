@@ -12,6 +12,10 @@ modification, are permitted provided that the following conditions are met:
 3.  Neither the name of the copyright holder nor the names of its
     contributors may be used to endorse or promote products derived from
     this software without specific prior written permission.
+4.  The source code and the binary form, and any modifications made to them may not
+    be used for the purpose of training or improving machine learning algorithms,
+    including but not limited to artificial intelligence, natural language
+    processing, or data mining. This condition applies to any derivatives,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
